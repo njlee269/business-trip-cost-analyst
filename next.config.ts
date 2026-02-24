@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "export",
+  basePath: "/business-trip-cost-analyst",
   images: {
     unoptimized: true,
   },
