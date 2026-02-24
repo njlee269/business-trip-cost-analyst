@@ -40,7 +40,20 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   }
 
   if (authenticated) {
-    return <>{children}</>;
+    return (
+      <>
+        {children}
+        <button
+          onClick={() => {
+            localStorage.removeItem(STORAGE_KEY);
+            setAuthenticated(false);
+          }}
+          className="fixed bottom-4 right-4 text-[10px] text-gray-300 hover:text-gray-500 transition-colors z-50"
+        >
+          Sign out
+        </button>
+      </>
+    );
   }
 
   return (

@@ -84,11 +84,12 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-4">
+      <div className="space-y-4" style={{ position: "relative" }}>
         {legs.map((leg, index) => (
           <div
             key={leg.id}
             className={`glass-card p-5 ${index > 0 ? "destination-connector" : ""}`}
+            style={{ position: "relative", zIndex: legs.length - index }}
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-2">

@@ -106,7 +106,7 @@ export default function AirportSearch({
       </div>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl border border-gray-100 shadow-float overflow-hidden z-50 animate-fade-in">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl border border-gray-100 shadow-float overflow-hidden animate-fade-in" style={{ zIndex: 9999 }}>
           {results.map((airport) => (
             <button
               key={airport.code}
