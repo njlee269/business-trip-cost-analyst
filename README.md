@@ -1,4 +1,6 @@
-# How Much Is It? — Business Trip Cost Analyst
+# PLANO — Business Trip Cost Analyst
+
+> **[Launch App →](https://njlee269.github.io/business-trip-cost-analyst/)**
 
 A SaaS platform that calculates the full cost of multi-destination business trips. Get a detailed receipt-style breakdown before you go.
 
