@@ -111,6 +111,7 @@ export interface DestinationCost {
   timezoneOffset: number;
   homeTimezoneOffset: number;
   timezoneDifference: string;
+  isReturn: boolean;
 }
 
 export interface TripCostSummary {

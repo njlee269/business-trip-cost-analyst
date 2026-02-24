@@ -38,6 +38,38 @@ function generateSchedule(summary: TripCostSummary): DaySchedule[] {
 
   for (const dest of summary.destinations) {
     const offsetDiff = dest.timezoneOffset - dest.homeTimezoneOffset;
+
+    if (dest.isReturn) {
+      const items: ScheduleItem[] = [];
+      if (dest.flights[0]) {
+        const depHour = parseInt(dest.flights[0].departureTime.split(":")[0]);
+        const depMin = parseInt(dest.flights[0].departureTime.split(":")[1]);
+        items.push({
+          time: dest.flights[0].departureTime,
+          homeTime: formatHomeTime(depHour, depMin, offsetDiff),
+          activity: `Depart for ${dest.destination.city} — ${dest.flights[0].airline} (${dest.flights[0].duration})`,
+          icon: "🛫",
+        });
+        items.push({
+          time: dest.flights[0].arrivalTime,
+          homeTime: formatHomeTime(
+            parseInt(dest.flights[0].arrivalTime.split(":")[0]),
+            parseInt(dest.flights[0].arrivalTime.split(":")[1]?.substring(0, 2) || "0"),
+            offsetDiff
+          ),
+          activity: `Arrive home — ${dest.destination.city}`,
+          icon: "🏠",
+        });
+      }
+      schedules.push({
+        date: dest.arrivalDate,
+        dayLabel: `Day ${schedules.length + 1} (Return Home)`,
+        destination: dest.destination.city,
+        items,
+      });
+      continue;
+    }
+
     const arrDate = new Date(dest.arrivalDate);
     const depDate = new Date(dest.departureDate);
 

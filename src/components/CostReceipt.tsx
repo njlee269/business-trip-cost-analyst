@@ -8,6 +8,71 @@ interface CostReceiptProps {
   summary: TripCostSummary;
 }
 
+function ReturnFlightSection({ dest, index }: { dest: DestinationCost; index: number }) {
+  const [selectedFlightIdx, setSelectedFlightIdx] = useState(0);
+  const [showAllFlights, setShowAllFlights] = useState(false);
+  const displayedFlights = showAllFlights ? dest.flights : dest.flights.slice(0, 2);
+
+  return (
+    <div className="receipt-section animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-5">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-gray-200 text-gray-600 flex items-center justify-center text-sm font-bold flex-shrink-0">
+            ↩
+          </div>
+          <div className="min-w-0">
+            <h3 className="font-semibold text-gray-900 truncate">
+              Return Home — {dest.destination.city}
+            </h3>
+            <div className="text-xs text-gray-400">
+              <span>{dest.arrivalDate}</span>
+              <span className="ml-2">· Flight only</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+            <span>✈️</span> Return Flight
+          </h4>
+          <span className="text-sm font-semibold text-gray-700">
+            ${dest.selectedFlight?.price.toLocaleString() || "—"}
+          </span>
+        </div>
+        <div className="space-y-2">
+          {displayedFlights.map((flight, fi) => (
+            <FlightCard
+              key={fi}
+              flight={flight}
+              isSelected={fi === selectedFlightIdx}
+              onSelect={() => setSelectedFlightIdx(fi)}
+            />
+          ))}
+        </div>
+        {dest.flights.length > 2 && (
+          <button
+            onClick={() => setShowAllFlights(!showAllFlights)}
+            className="mt-2 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            {showAllFlights
+              ? "Show less"
+              : `+${dest.flights.length - 2} more flight options`}
+          </button>
+        )}
+      </div>
+
+      <div className="flex items-center justify-between pt-4 border-t border-dashed border-gray-200">
+        <span className="text-sm font-medium text-gray-500">Return Flight Cost</span>
+        <span className="text-lg font-bold text-gray-900">
+          ${dest.subtotal.toLocaleString()}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function DestinationSection({ dest, index }: { dest: DestinationCost; index: number }) {
   const [selectedFlightIdx, setSelectedFlightIdx] = useState(0);
   const [showAllFlights, setShowAllFlights] = useState(false);
@@ -238,9 +303,13 @@ export default function CostReceipt({ summary }: CostReceiptProps) {
         </p>
       </div>
 
-      {summary.destinations.map((dest, i) => (
-        <DestinationSection key={i} dest={dest} index={i} />
-      ))}
+      {summary.destinations.map((dest, i) =>
+        dest.isReturn ? (
+          <ReturnFlightSection key={i} dest={dest} index={i} />
+        ) : (
+          <DestinationSection key={i} dest={dest} index={i} />
+        )
+      )}
 
       {/* Grand Total Receipt */}
       <div className="glass-card p-4 sm:p-6 !border-gray-300/60">

@@ -46,6 +46,39 @@ export function calculateTripCosts(plan: TripPlan): TripCostSummary {
       plan.flightPriority
     );
     const selectedFlight = flights[0] || null;
+    const flightCost = selectedFlight?.price || 0;
+
+    if (leg.isReturn) {
+      totalFlightCost += flightCost;
+
+      const timeDiff = cityData.timezoneOffset - homeTimezone;
+      const timeDiffStr =
+        timeDiff === 0
+          ? "Same timezone"
+          : `${timeDiff > 0 ? "+" : ""}${timeDiff}h from home`;
+
+      destinations.push({
+        destination: leg.to,
+        arrivalDate,
+        departureDate: arrivalDate,
+        totalNights: 0,
+        totalDays: 0,
+        flights,
+        selectedFlight,
+        transport: [],
+        food: { mealsPerDay: 0, totalDays: 0, mealOptions: [], avgDailyCost: 0, totalCost: 0, currency: "USD" },
+        hotels: [],
+        selectedHotel: null,
+        transportTotal: 0,
+        subtotal: Math.round(flightCost * 100) / 100,
+        timezone: cityData.timezone,
+        timezoneOffset: cityData.timezoneOffset,
+        homeTimezoneOffset: homeTimezone,
+        timezoneDifference: timeDiffStr,
+        isReturn: true,
+      });
+      continue;
+    }
 
     const transport: TransportOption[] = cityData.transport.options.map((opt) => {
       const days = opt.tripsPerDay === 0 ? 1 : totalDays;
@@ -86,7 +119,6 @@ export function calculateTripCosts(plan: TripPlan): TripCostSummary {
 
     const selectedHotel = hotels.find((h) => h.stars === Math.min(plan.hotelStars, 5)) || hotels[0];
 
-    const flightCost = selectedFlight?.price || 0;
     const hotelCost = selectedHotel?.totalCost || 0;
     const subtotal = flightCost + transportTotal + food.totalCost + hotelCost;
 
@@ -127,6 +159,7 @@ export function calculateTripCosts(plan: TripPlan): TripCostSummary {
       timezoneOffset: cityData.timezoneOffset,
       homeTimezoneOffset: homeTimezone,
       timezoneDifference: timeDiffStr,
+      isReturn: false,
     });
   }
 
