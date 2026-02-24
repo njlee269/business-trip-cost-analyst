@@ -27,6 +27,7 @@ export default function AirportSearch({
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 });
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputBoxRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const updatePosition = useCallback(() => {
     if (inputBoxRef.current) {
@@ -41,7 +42,10 @@ export default function AirportSearch({
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      const inWrapper = wrapperRef.current?.contains(target);
+      const inDropdown = dropdownRef.current?.contains(target);
+      if (!inWrapper && !inDropdown) {
         setIsOpen(false);
         setFocused(false);
       }
@@ -134,6 +138,7 @@ export default function AirportSearch({
         typeof document !== "undefined" &&
         createPortal(
           <div
+            ref={dropdownRef}
             className="bg-white rounded-xl border border-gray-100 overflow-hidden animate-fade-in"
             style={{
               position: "fixed",
@@ -143,7 +148,6 @@ export default function AirportSearch({
               zIndex: 99999,
               boxShadow: "0 10px 40px -10px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.08)",
             }}
-            onMouseDown={(e) => e.preventDefault()}
           >
             {results.map((airport) => (
               <button
