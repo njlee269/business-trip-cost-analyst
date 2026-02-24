@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Airport } from "@/lib/types";
 import { searchAirports } from "@/lib/airports";
+import { createPortal } from "react-dom";
 
 interface AirportSearchProps {
   value: Airport | null;
@@ -23,7 +24,20 @@ export default function AirportSearch({
   const [results, setResults] = useState<Airport[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [focused, setFocused] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 });
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputBoxRef = useRef<HTMLDivElement>(null);
+
+  const updatePosition = useCallback(() => {
+    if (inputBoxRef.current) {
+      const rect = inputBoxRef.current.getBoundingClientRect();
+      setDropdownPos({
+        top: rect.bottom + 8,
+        left: rect.left,
+        width: rect.width,
+      });
+    }
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -35,6 +49,18 @@ export default function AirportSearch({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      updatePosition();
+      window.addEventListener("scroll", updatePosition, true);
+      window.addEventListener("resize", updatePosition);
+      return () => {
+        window.removeEventListener("scroll", updatePosition, true);
+        window.removeEventListener("resize", updatePosition);
+      };
+    }
+  }, [isOpen, updatePosition]);
 
   const handleSearch = (q: string) => {
     setQuery(q);
@@ -55,14 +81,13 @@ export default function AirportSearch({
     setFocused(false);
   };
 
-  const displayValue = value ? `${value.city} (${value.code})` : "";
-
   return (
-    <div ref={wrapperRef} className="relative" style={{ zIndex: isOpen ? 100 : 1 }}>
+    <div ref={wrapperRef} className="relative">
       <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">
         {label}
       </label>
       <div
+        ref={inputBoxRef}
         className={`glass-input flex items-center gap-2 cursor-text transition-all ${
           focused ? "!border-gray-400/80 !bg-white shadow-[0_0_0_3px_rgba(156,163,175,0.15)]" : ""
         } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
@@ -105,29 +130,43 @@ export default function AirportSearch({
         )}
       </div>
 
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl border border-gray-100 shadow-float overflow-hidden animate-fade-in" style={{ zIndex: 9999 }}>
-          {results.map((airport) => (
-            <button
-              key={airport.code}
-              onClick={() => handleSelect(airport)}
-              className="w-full px-4 py-3 flex items-center gap-3 hover:bg-gray-50 transition-colors text-left group"
-            >
-              <span className="text-xs font-mono bg-gray-100 group-hover:bg-gray-200 text-gray-600 px-2 py-1 rounded transition-colors">
-                {airport.code}
-              </span>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-gray-800 truncate">
-                  {airport.city}
+      {isOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="bg-white rounded-xl border border-gray-100 overflow-hidden animate-fade-in"
+            style={{
+              position: "fixed",
+              top: dropdownPos.top,
+              left: dropdownPos.left,
+              width: dropdownPos.width,
+              zIndex: 99999,
+              boxShadow: "0 10px 40px -10px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.08)",
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            {results.map((airport) => (
+              <button
+                key={airport.code}
+                onClick={() => handleSelect(airport)}
+                className="w-full px-4 py-3 flex items-center gap-3 hover:bg-gray-50 transition-colors text-left group"
+              >
+                <span className="text-xs font-mono bg-gray-100 group-hover:bg-gray-200 text-gray-600 px-2 py-1 rounded transition-colors">
+                  {airport.code}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-gray-800 truncate">
+                    {airport.city}
+                  </div>
+                  <div className="text-xs text-gray-400 truncate">
+                    {airport.name} · {airport.country}
+                  </div>
                 </div>
-                <div className="text-xs text-gray-400 truncate">
-                  {airport.name} · {airport.country}
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
-      )}
+              </button>
+            ))}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
