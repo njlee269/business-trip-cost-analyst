@@ -5,16 +5,16 @@ import Link from "next/link";
 function PlanoLogo({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
-      {/* Fuselage — pointing straight up */}
-      <rect x="14.5" y="4" width="3" height="20" rx="1.5" fill="#111827" />
-      {/* Nose cone */}
-      <path d="M14.5 6 L16 2 L17.5 6" fill="#111827" />
-      {/* Tail fin */}
-      <path d="M14 24 L16 22 L18 24 L16 26 Z" fill="#111827" />
-      {/* Left wing — detached, gap from fuselage */}
-      <path d="M4 17 L12 14 L12 18 L6 19 Z" fill="#111827" />
-      {/* Right wing — detached, gap from fuselage */}
-      <path d="M28 17 L20 14 L20 18 L26 19 Z" fill="#111827" />
+      {/* Fuselage — thick body pointing up */}
+      <path d="M13 24 L13 8 Q13 4 16 2 Q19 4 19 8 L19 24 Z" fill="#111827" />
+      {/* Left wing — detached from body */}
+      <path d="M3 19 L11 13 L11 18 L5 20.5 Z" fill="#111827" />
+      {/* Right wing — attached to body */}
+      <path d="M19 13 L29 19 L27 20.5 L19 18 Z" fill="#111827" />
+      {/* Tail left */}
+      <path d="M10 26 L13 22 L13 26 Z" fill="#111827" />
+      {/* Tail right */}
+      <path d="M22 26 L19 22 L19 26 Z" fill="#111827" />
     </svg>
   );
 }
