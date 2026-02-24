@@ -61,13 +61,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
       <div className="w-full max-w-sm text-center">
         <div className="mb-8">
           <div className="flex items-center justify-center mb-4">
-            <svg width="40" height="40" viewBox="0 0 32 32" fill="none" className="opacity-80">
-              <path d="M13 24 L13 8 Q13 4 16 2 Q19 4 19 8 L19 24 Z" fill="#111827" />
-              <path d="M3 19 L11 13 L11 18 L5 20.5 Z" fill="#111827" />
-              <path d="M19 13 L29 19 L27 20.5 L19 18 Z" fill="#111827" />
-              <path d="M10 26 L13 22 L13 26 Z" fill="#111827" />
-              <path d="M22 26 L19 22 L19 26 Z" fill="#111827" />
-            </svg>
+            <img src={`${process.env.__NEXT_ROUTER_BASEPATH || ""}/logo.png`} alt="PLANO" width={40} height={40} className="opacity-90" />
           </div>
           <h1 className="text-xl font-bold text-gray-900 tracking-tight">PLANO</h1>
           <p className="text-xs text-gray-400 mt-1">Enter access code to continue</p>

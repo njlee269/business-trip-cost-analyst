@@ -14,8 +14,8 @@ export default function FlightCard({ flight, isSelected, onSelect }: FlightCardP
       onClick={onSelect}
       className={`w-full text-left p-3 sm:p-4 rounded-xl border transition-all duration-300 group ${
         isSelected
-          ? "border-gray-400 bg-gray-50/80 shadow-glass"
-          : "border-gray-100 bg-white hover:border-gray-200 hover:shadow-glass"
+          ? "border-gray-400 bg-gray-50/80 shadow-[0_2px_16px_rgba(0,0,0,0.06)]"
+          : "border-gray-100 bg-white hover:border-gray-200 hover:shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
       }`}
     >
       <div className="flex items-start sm:items-center justify-between mb-3 gap-2">

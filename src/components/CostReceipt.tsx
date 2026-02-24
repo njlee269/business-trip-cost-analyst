@@ -1,17 +1,36 @@
 "use client";
 
-import { TripCostSummary, DestinationCost } from "@/lib/types";
+import { TripCostSummary, DestinationCost, HotelOption } from "@/lib/types";
 import FlightCard from "./FlightCard";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 interface CostReceiptProps {
   summary: TripCostSummary;
 }
 
-function ReturnFlightSection({ dest, index }: { dest: DestinationCost; index: number }) {
-  const [selectedFlightIdx, setSelectedFlightIdx] = useState(0);
+interface Selections {
+  [destIdx: number]: { flightIdx: number; hotelIdx: number };
+}
+
+function buildAgodaUrl(hotel: HotelOption, city: string, checkIn: string, checkOut: string, nights: number): string {
+  const hotelQuery = encodeURIComponent(`${hotel.name} ${city}`);
+  return `https://www.agoda.com/search?q=${hotelQuery}&checkIn=${checkIn}&los=${nights}&checkOut=${checkOut}&rooms=1&adults=1&cid=1922868`;
+}
+
+function ReturnFlightSection({
+  dest,
+  index,
+  selectedFlightIdx,
+  onSelectFlight,
+}: {
+  dest: DestinationCost;
+  index: number;
+  selectedFlightIdx: number;
+  onSelectFlight: (idx: number) => void;
+}) {
   const [showAllFlights, setShowAllFlights] = useState(false);
   const displayedFlights = showAllFlights ? dest.flights : dest.flights.slice(0, 2);
+  const selectedFlight = dest.flights[selectedFlightIdx] || dest.flights[0];
 
   return (
     <div className="receipt-section animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
@@ -38,7 +57,7 @@ function ReturnFlightSection({ dest, index }: { dest: DestinationCost; index: nu
             <span>✈️</span> Return Flight
           </h4>
           <span className="text-sm font-semibold text-gray-700">
-            ${dest.selectedFlight?.price.toLocaleString() || "—"}
+            ${selectedFlight?.price.toLocaleString() || "—"}
           </span>
         </div>
         <div className="space-y-2">
@@ -47,7 +66,7 @@ function ReturnFlightSection({ dest, index }: { dest: DestinationCost; index: nu
               key={fi}
               flight={flight}
               isSelected={fi === selectedFlightIdx}
-              onSelect={() => setSelectedFlightIdx(fi)}
+              onSelect={() => onSelectFlight(fi)}
             />
           ))}
         </div>
@@ -56,9 +75,7 @@ function ReturnFlightSection({ dest, index }: { dest: DestinationCost; index: nu
             onClick={() => setShowAllFlights(!showAllFlights)}
             className="mt-2 text-xs text-gray-400 hover:text-gray-600 transition-colors"
           >
-            {showAllFlights
-              ? "Show less"
-              : `+${dest.flights.length - 2} more flight options`}
+            {showAllFlights ? "Show less" : `+${dest.flights.length - 2} more flight options`}
           </button>
         )}
       </div>
@@ -66,17 +83,38 @@ function ReturnFlightSection({ dest, index }: { dest: DestinationCost; index: nu
       <div className="flex items-center justify-between pt-4 border-t border-dashed border-gray-200">
         <span className="text-sm font-medium text-gray-500">Return Flight Cost</span>
         <span className="text-lg font-bold text-gray-900">
-          ${dest.subtotal.toLocaleString()}
+          ${selectedFlight?.price.toLocaleString() || "—"}
         </span>
       </div>
     </div>
   );
 }
 
-function DestinationSection({ dest, index }: { dest: DestinationCost; index: number }) {
-  const [selectedFlightIdx, setSelectedFlightIdx] = useState(0);
+function DestinationSection({
+  dest,
+  index,
+  selectedFlightIdx,
+  selectedHotelIdx,
+  onSelectFlight,
+  onSelectHotel,
+}: {
+  dest: DestinationCost;
+  index: number;
+  selectedFlightIdx: number;
+  selectedHotelIdx: number;
+  onSelectFlight: (idx: number) => void;
+  onSelectHotel: (idx: number) => void;
+}) {
   const [showAllFlights, setShowAllFlights] = useState(false);
   const displayedFlights = showAllFlights ? dest.flights : dest.flights.slice(0, 2);
+  const selectedFlight = dest.flights[selectedFlightIdx] || dest.flights[0];
+  const selectedHotel = dest.hotels[selectedHotelIdx] ?? dest.hotels[0];
+
+  const subtotal =
+    (selectedFlight?.price || 0) +
+    dest.transportTotal +
+    dest.food.totalCost +
+    (selectedHotel?.totalCost || 0);
 
   return (
     <div className="receipt-section animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
@@ -112,7 +150,7 @@ function DestinationSection({ dest, index }: { dest: DestinationCost; index: num
             <span>✈️</span> Flight Options
           </h4>
           <span className="text-sm font-semibold text-gray-700">
-            ${dest.selectedFlight?.price.toLocaleString() || "—"}
+            ${selectedFlight?.price.toLocaleString() || "—"}
           </span>
         </div>
         <div className="space-y-2">
@@ -121,7 +159,7 @@ function DestinationSection({ dest, index }: { dest: DestinationCost; index: num
               key={fi}
               flight={flight}
               isSelected={fi === selectedFlightIdx}
-              onSelect={() => setSelectedFlightIdx(fi)}
+              onSelect={() => onSelectFlight(fi)}
             />
           ))}
         </div>
@@ -130,9 +168,7 @@ function DestinationSection({ dest, index }: { dest: DestinationCost; index: num
             onClick={() => setShowAllFlights(!showAllFlights)}
             className="mt-2 text-xs text-gray-400 hover:text-gray-600 transition-colors"
           >
-            {showAllFlights
-              ? "Show less"
-              : `+${dest.flights.length - 2} more flight options`}
+            {showAllFlights ? "Show less" : `+${dest.flights.length - 2} more flight options`}
           </button>
         )}
       </div>
@@ -147,7 +183,6 @@ function DestinationSection({ dest, index }: { dest: DestinationCost; index: num
             ${dest.transportTotal.toLocaleString()}
           </span>
         </div>
-        {/* Mobile: card layout, Desktop: table */}
         <div className="hidden sm:block bg-gray-50/50 rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
@@ -172,13 +207,9 @@ function DestinationSection({ dest, index }: { dest: DestinationCost; index: num
                   </td>
                   <td className="p-3 text-gray-600 text-xs">${t.costPerTrip}</td>
                   <td className="p-3 text-gray-600 text-xs">
-                    {t.tripsPerDay === 0
-                      ? "2× (arr+dep)"
-                      : `${t.tripsPerDay}×/day · ${t.totalDays}d`}
+                    {t.tripsPerDay === 0 ? "2× (arr+dep)" : `${t.tripsPerDay}×/day · ${t.totalDays}d`}
                   </td>
-                  <td className="p-3 text-right font-medium text-gray-800 text-xs">
-                    ${t.totalCost.toLocaleString()}
-                  </td>
+                  <td className="p-3 text-right font-medium text-gray-800 text-xs">${t.totalCost.toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>
@@ -195,9 +226,7 @@ function DestinationSection({ dest, index }: { dest: DestinationCost; index: num
                 <span className="font-medium text-gray-800 text-xs">${t.totalCost.toLocaleString()}</span>
               </div>
               <div className="text-[10px] text-gray-400 pl-6">
-                ${t.costPerTrip}/trip · {t.tripsPerDay === 0
-                  ? "2× (arr+dep)"
-                  : `${t.tripsPerDay}×/day · ${t.totalDays}d`}
+                ${t.costPerTrip}/trip · {t.tripsPerDay === 0 ? "2× (arr+dep)" : `${t.tripsPerDay}×/day · ${t.totalDays}d`}
               </div>
               {t.notes && <div className="text-[10px] text-gray-400 pl-6 mt-0.5">{t.notes}</div>}
             </div>
@@ -211,9 +240,7 @@ function DestinationSection({ dest, index }: { dest: DestinationCost; index: num
           <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2">
             <span>🍽️</span> Food & Dining ({dest.food.mealsPerDay} meals/day)
           </h4>
-          <span className="text-sm font-semibold text-gray-700">
-            ${dest.food.totalCost.toLocaleString()}
-          </span>
+          <span className="text-sm font-semibold text-gray-700">${dest.food.totalCost.toLocaleString()}</span>
         </div>
         <div className="grid grid-cols-3 gap-2 mb-3">
           {dest.food.mealOptions.map((meal, mi) => (
@@ -236,60 +263,108 @@ function DestinationSection({ dest, index }: { dest: DestinationCost; index: num
             <span>🏨</span> Hotel Options ({dest.totalNights} night{dest.totalNights !== 1 ? "s" : ""})
           </h4>
           <span className="text-sm font-semibold text-gray-700">
-            ${dest.selectedHotel?.totalCost.toLocaleString() || "—"}
+            ${selectedHotel?.totalCost.toLocaleString() || "—"}
           </span>
         </div>
         <div className="space-y-2">
-          {dest.hotels.map((hotel, hi) => (
-            <div
-              key={hi}
-              className={`p-3 rounded-xl border transition-all ${
-                dest.selectedHotel?.name === hotel.name
-                  ? "border-gray-400 bg-gray-50/80"
-                  : "border-gray-100 bg-white hover:border-gray-200"
-              }`}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div>
-                  <div className="text-sm font-medium text-gray-800">{hotel.name}</div>
-                  <div className="text-xs text-gray-400">
-                    {"★".repeat(hotel.stars)} · {hotel.neighborhood} · {hotel.rating}/5
+          {dest.hotels.map((hotel, hi) => {
+            const isSelected = hi === selectedHotelIdx;
+            const agodaUrl = buildAgodaUrl(hotel, dest.destination.city, dest.arrivalDate, dest.departureDate, dest.totalNights);
+            return (
+              <button
+                key={hi}
+                onClick={() => onSelectHotel(hi)}
+                className={`w-full text-left p-3 sm:p-4 rounded-xl border transition-all duration-300 ${
+                  isSelected
+                    ? "border-gray-400 bg-gray-50/80 shadow-[0_2px_16px_rgba(0,0,0,0.06)]"
+                    : "border-gray-100 bg-white hover:border-gray-200 hover:shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
+                }`}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <div className="text-sm font-medium text-gray-800">{hotel.name}</div>
+                    <div className="text-xs text-gray-400">
+                      {"★".repeat(hotel.stars)} · {hotel.neighborhood} · {hotel.rating}/5
+                    </div>
+                  </div>
+                  <div className="flex items-center sm:flex-col sm:items-end gap-3 sm:gap-0">
+                    <div className="text-sm font-semibold text-gray-800">${hotel.pricePerNight}/night</div>
+                    <div className="text-xs text-gray-400">Total: ${hotel.totalCost.toLocaleString()}</div>
                   </div>
                 </div>
-                <div className="flex items-center sm:flex-col sm:items-end gap-3 sm:gap-0">
-                  <div className="text-sm font-semibold text-gray-800">
-                    ${hotel.pricePerNight}/night
+                {isSelected && (
+                  <div className="mt-3 pt-3 border-t border-gray-100">
+                    <a
+                      href={agodaUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Book on Agoda →
+                    </a>
                   </div>
-                  <div className="text-xs text-gray-400">
-                    Total: ${hotel.totalCost.toLocaleString()}
-                  </div>
-                  <a
-                    href={hotel.bookingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[10px] font-medium text-gray-500 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-2.5 py-1 rounded-lg transition-all sm:mt-1 ml-auto sm:ml-0"
-                  >
-                    Book on Agoda →
-                  </a>
-                </div>
-              </div>
-            </div>
-          ))}
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Destination Subtotal */}
       <div className="flex items-center justify-between pt-4 border-t border-dashed border-gray-200">
         <span className="text-sm font-medium text-gray-500">Destination Subtotal</span>
-        <span className="text-lg font-bold text-gray-900">
-          ${dest.subtotal.toLocaleString()}
-        </span>
+        <span className="text-lg font-bold text-gray-900">${Math.round(subtotal).toLocaleString()}</span>
       </div>
     </div>
   );
 }
 
 export default function CostReceipt({ summary }: CostReceiptProps) {
+  const initialSelections: Selections = {};
+  summary.destinations.forEach((dest, i) => {
+    const defaultHotelIdx = dest.hotels.findIndex((h) => h.name === dest.selectedHotel?.name);
+    initialSelections[i] = { flightIdx: 0, hotelIdx: Math.max(0, defaultHotelIdx) };
+  });
+
+  const [selections, setSelections] = useState<Selections>(initialSelections);
+
+  const setFlight = (destIdx: number, flightIdx: number) => {
+    setSelections((prev) => ({ ...prev, [destIdx]: { ...prev[destIdx], flightIdx } }));
+  };
+
+  const setHotel = (destIdx: number, hotelIdx: number) => {
+    setSelections((prev) => ({ ...prev, [destIdx]: { ...prev[destIdx], hotelIdx } }));
+  };
+
+  const totals = useMemo(() => {
+    let flights = 0;
+    let transport = 0;
+    let food = 0;
+    let hotels = 0;
+
+    summary.destinations.forEach((dest, i) => {
+      const sel = selections[i] || { flightIdx: 0, hotelIdx: 0 };
+      const flight = dest.flights[sel.flightIdx] || dest.flights[0];
+      flights += flight?.price || 0;
+
+      if (!dest.isReturn) {
+        transport += dest.transportTotal;
+        food += dest.food.totalCost;
+        const hotel = dest.hotels[sel.hotelIdx] ?? dest.hotels[0];
+        hotels += hotel?.totalCost || 0;
+      }
+    });
+
+    return {
+      flights: Math.round(flights * 100) / 100,
+      transport: Math.round(transport * 100) / 100,
+      food: Math.round(food * 100) / 100,
+      hotels: Math.round(hotels * 100) / 100,
+      grand: Math.round((flights + transport + food + hotels) * 100) / 100,
+    };
+  }, [selections, summary.destinations]);
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="text-center mb-6 sm:mb-8">
@@ -305,74 +380,66 @@ export default function CostReceipt({ summary }: CostReceiptProps) {
 
       {summary.destinations.map((dest, i) =>
         dest.isReturn ? (
-          <ReturnFlightSection key={i} dest={dest} index={i} />
+          <ReturnFlightSection
+            key={i}
+            dest={dest}
+            index={i}
+            selectedFlightIdx={selections[i]?.flightIdx ?? 0}
+            onSelectFlight={(idx) => setFlight(i, idx)}
+          />
         ) : (
-          <DestinationSection key={i} dest={dest} index={i} />
+          <DestinationSection
+            key={i}
+            dest={dest}
+            index={i}
+            selectedFlightIdx={selections[i]?.flightIdx ?? 0}
+            selectedHotelIdx={selections[i]?.hotelIdx ?? 0}
+            onSelectFlight={(idx) => setFlight(i, idx)}
+            onSelectHotel={(idx) => setHotel(i, idx)}
+          />
         )
       )}
 
       {/* Grand Total Receipt */}
-      <div className="glass-card p-4 sm:p-6 !border-gray-300/60">
+      <div className="receipt-section !border-gray-200">
         <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
           Total Trip Cost Summary
         </h3>
 
         <div className="space-y-3 mb-6">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500 flex items-center gap-2">
-              <span>✈️</span> Total Flights
-            </span>
-            <span className="font-medium text-gray-800">
-              ${summary.totalFlightCost.toLocaleString()}
-            </span>
+            <span className="text-gray-500 flex items-center gap-2"><span>✈️</span> Total Flights</span>
+            <span className="font-medium text-gray-800">${totals.flights.toLocaleString()}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500 flex items-center gap-2">
-              <span>🚗</span> Total Transportation
-            </span>
-            <span className="font-medium text-gray-800">
-              ${summary.totalTransportCost.toLocaleString()}
-            </span>
+            <span className="text-gray-500 flex items-center gap-2"><span>🚗</span> Total Transportation</span>
+            <span className="font-medium text-gray-800">${totals.transport.toLocaleString()}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500 flex items-center gap-2">
-              <span>🍽️</span> Total Food & Dining
-            </span>
-            <span className="font-medium text-gray-800">
-              ${summary.totalFoodCost.toLocaleString()}
-            </span>
+            <span className="text-gray-500 flex items-center gap-2"><span>🍽️</span> Total Food & Dining</span>
+            <span className="font-medium text-gray-800">${totals.food.toLocaleString()}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500 flex items-center gap-2">
-              <span>🏨</span> Total Accommodation
-            </span>
-            <span className="font-medium text-gray-800">
-              ${summary.totalHotelCost.toLocaleString()}
-            </span>
+            <span className="text-gray-500 flex items-center gap-2"><span>🏨</span> Total Accommodation</span>
+            <span className="font-medium text-gray-800">${totals.hotels.toLocaleString()}</span>
           </div>
         </div>
 
         <div className="border-t-2 border-dashed border-gray-200 pt-4 mb-4">
           <div className="flex items-center justify-between">
             <span className="text-sm sm:text-base font-semibold text-gray-700">Grand Total (USD)</span>
-            <span className="text-2xl sm:text-3xl font-bold text-gray-900">
-              ${summary.grandTotal.toLocaleString()}
-            </span>
+            <span className="text-2xl sm:text-3xl font-bold text-gray-900">${totals.grand.toLocaleString()}</span>
           </div>
         </div>
 
         {summary.localCurrencyTotals.length > 0 && (
           <div className="bg-gray-50/50 rounded-xl p-3 sm:p-4">
-            <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-2">
-              Local Currency Equivalents
-            </div>
+            <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-2">Local Currency Equivalents</div>
             <div className="space-y-1">
               {summary.localCurrencyTotals.map((lc, i) => (
                 <div key={i} className="flex items-center justify-between text-xs">
                   <span className="text-gray-500">{lc.destination}</span>
-                  <span className="font-medium text-gray-600">
-                    {lc.amount.toLocaleString()} {lc.currency}
-                  </span>
+                  <span className="font-medium text-gray-600">{lc.amount.toLocaleString()} {lc.currency}</span>
                 </div>
               ))}
             </div>
