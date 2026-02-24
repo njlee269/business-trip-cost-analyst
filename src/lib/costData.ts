@@ -466,10 +466,10 @@ function hashCode(str: string): number {
 }
 
 function seededRandom(seed: number) {
-  let s = seed;
+  let s = Math.abs(seed) || 1;
   return () => {
     s = (s * 16807) % 2147483647;
-    return (s - 1) / 2147483646;
+    return Math.abs(s) / 2147483647;
   };
 }
 
