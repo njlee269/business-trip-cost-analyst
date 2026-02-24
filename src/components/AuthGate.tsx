@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-const ACCESS_CODE = "plano2026";
+const ACCESS_CODE = "9999";
 const STORAGE_KEY = "plano_auth";
 
 export default function AuthGate({ children }: { children: React.ReactNode }) {
