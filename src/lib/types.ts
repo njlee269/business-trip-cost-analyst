@@ -13,11 +13,23 @@ export interface TripLeg {
   isReturn: boolean;
 }
 
+export type FlightPriority = "duration" | "rating" | "stops" | "price";
+
 export interface TripPlan {
   legs: TripLeg[];
   mealsPerDay: number;
   hotelStars: number;
   travelers: number;
+  flightPriority: FlightPriority;
+}
+
+export interface SavedTrip {
+  id: string;
+  createdAt: string;
+  destinations: string[];
+  totalCost: number;
+  currency: string;
+  summary: TripCostSummary;
 }
 
 export interface FlightOption {

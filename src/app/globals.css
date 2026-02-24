@@ -84,7 +84,7 @@ body {
   }
 
   .receipt-section {
-    @apply glass-card p-6 mb-4;
+    @apply glass-card p-4 sm:p-6 mb-4;
     border-left: 3px solid #e5e7eb;
   }
 
@@ -110,6 +110,13 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 

@@ -152,7 +152,7 @@ export default function Itinerary({ summary }: ItineraryProps) {
   if (schedule.length === 0) return null;
 
   return (
-    <div className="glass-card p-6 animate-slide-up">
+    <div className="glass-card p-4 sm:p-6 animate-slide-up">
       <h3 className="text-sm font-semibold text-gray-900 mb-1">Suggested Itinerary</h3>
       <p className="text-xs text-gray-400 mb-6">
         Daily schedule with local time and home time comparison
@@ -178,13 +178,13 @@ export default function Itinerary({ summary }: ItineraryProps) {
                 <div key={ii} className="relative pb-3 group">
                   <div className="absolute -left-[29px] top-1 w-2 h-2 rounded-full bg-gray-200 group-hover:bg-gray-400 transition-colors" />
                   <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-16">
-                      <div className="text-xs font-mono font-medium text-gray-700">{item.time}</div>
-                      <div className="text-[9px] font-mono text-gray-300">{item.homeTime} 🏠</div>
+                    <div className="flex-shrink-0 w-14 sm:w-16">
+                      <div className="text-[11px] sm:text-xs font-mono font-medium text-gray-700">{item.time}</div>
+                      <div className="text-[8px] sm:text-[9px] font-mono text-gray-300">{item.homeTime} 🏠</div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm">{item.icon}</span>
-                      <span className="text-xs text-gray-600">{item.activity}</span>
+                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                      <span className="text-sm flex-shrink-0">{item.icon}</span>
+                      <span className="text-[11px] sm:text-xs text-gray-600 break-words">{item.activity}</span>
                     </div>
                   </div>
                 </div>

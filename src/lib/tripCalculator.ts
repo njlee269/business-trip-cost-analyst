@@ -4,13 +4,14 @@ import {
   DestinationCost,
   TransportOption,
   FoodBreakdown,
+  FlightPriority,
 } from "./types";
 import { getCityData, generateFlightOptions } from "./costData";
 
-function daysBetween(date1: string, date2: string): number {
+function nightsBetween(date1: string, date2: string): number {
   const d1 = new Date(date1);
   const d2 = new Date(date2);
-  return Math.max(1, Math.ceil((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)));
+  return Math.max(1, Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
 export function calculateTripCosts(plan: TripPlan): TripCostSummary {
@@ -33,15 +34,16 @@ export function calculateTripCosts(plan: TripPlan): TripCostSummary {
     const arrivalDate = leg.departureDate;
     const departureDate = nextLeg?.departureDate || leg.departureDate;
 
-    const totalDays = daysBetween(arrivalDate, departureDate);
-    const totalNights = Math.max(0, totalDays);
+    const totalNights = nightsBetween(arrivalDate, departureDate);
+    const totalDays = totalNights + 1;
 
     const cityData = getCityData(leg.to.city);
 
     const flights = generateFlightOptions(
       leg.from.code,
       leg.to.code,
-      leg.departureDate
+      leg.departureDate,
+      plan.flightPriority
     );
     const selectedFlight = flights[0] || null;
 
@@ -70,10 +72,16 @@ export function calculateTripCosts(plan: TripPlan): TripCostSummary {
       currency: "USD",
     };
 
+    const agodaBaseUrl = "https://www.agoda.com/search";
+    const checkIn = arrivalDate;
+    const checkOut = departureDate || arrivalDate;
+    const cityQuery = encodeURIComponent(leg.to.city);
+
     const hotels = cityData.hotels.map((h) => ({
       ...h,
       totalNights,
       totalCost: h.pricePerNight * totalNights,
+      bookingUrl: `${agodaBaseUrl}?city=${cityQuery}&checkIn=${checkIn}&checkOut=${checkOut}&rooms=1&adults=1&los=${totalNights}&cid=1922868`,
     }));
 
     const selectedHotel = hotels.find((h) => h.stars === Math.min(plan.hotelStars, 5)) || hotels[0];

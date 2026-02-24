@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Airport, TripLeg, TripPlan } from "@/lib/types";
+import { Airport, TripLeg, TripPlan, FlightPriority } from "@/lib/types";
 import AirportSearch from "./AirportSearch";
 
 interface TripFormProps {
@@ -25,6 +25,7 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
   const [legs, setLegs] = useState<TripLeg[]>([createLeg()]);
   const [mealsPerDay, setMealsPerDay] = useState(2);
   const [hotelStars, setHotelStars] = useState(4);
+  const [flightPriority, setFlightPriority] = useState<FlightPriority>("rating");
 
   const origin = legs[0]?.from;
 
@@ -72,6 +73,7 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
       mealsPerDay,
       hotelStars,
       travelers: 1,
+      flightPriority,
     };
     onSubmit(plan);
   };
@@ -88,7 +90,7 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
         {legs.map((leg, index) => (
           <div
             key={leg.id}
-            className={`glass-card p-5 ${index > 0 ? "destination-connector" : ""}`}
+            className={`glass-card p-3 sm:p-5 ${index > 0 ? "destination-connector" : ""}`}
             style={{ position: "relative", zIndex: legs.length - index }}
           >
             <div className="flex items-start justify-between mb-4">
@@ -182,7 +184,7 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
         )}
       </div>
 
-      <div className="glass-card p-5">
+      <div className="glass-card p-3 sm:p-5">
         <h3 className="text-sm font-medium text-gray-600 mb-4">
           Trip Preferences
         </h3>
@@ -224,6 +226,33 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
                   }`}
                 >
                   {"★".repeat(n)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">
+              Flight Priority
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {([
+                { key: "duration", label: "Shortest", icon: "⏱" },
+                { key: "rating", label: "Top Airline", icon: "⭐" },
+                { key: "stops", label: "Fewest Stops", icon: "✈️" },
+                { key: "price", label: "Cheapest", icon: "💰" },
+              ] as const).map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => setFlightPriority(opt.key)}
+                  className={`py-2.5 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-center gap-1.5 ${
+                    flightPriority === opt.key
+                      ? "bg-gray-900 text-white shadow-btn"
+                      : "bg-gray-50 text-gray-500 hover:bg-gray-100"
+                  }`}
+                >
+                  <span>{opt.icon}</span>
+                  <span>{opt.label}</span>
                 </button>
               ))}
             </div>

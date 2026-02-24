@@ -22,7 +22,7 @@ function PlanoLogo({ size = 24 }: { size?: number }) {
 export default function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl border-b border-gray-100/80">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group">
           <div className="w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center shadow-btn group-hover:shadow-btn-hover transition-all duration-300 group-hover:-translate-y-0.5">
             <PlanoLogo size={22} />
@@ -39,7 +39,7 @@ export default function Header() {
         <nav className="flex items-center gap-2">
           <Link
             href="/planner"
-            className="glass-button text-sm !px-5 !py-2"
+            className="glass-button text-xs sm:text-sm !px-3 sm:!px-5 !py-1.5 sm:!py-2"
           >
             Plan a Trip
           </Link>

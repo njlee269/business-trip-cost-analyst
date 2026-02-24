@@ -1,4 +1,4 @@
-import { TransportOption, MealCost, HotelOption, FlightOption } from "./types";
+import { TransportOption, MealCost, HotelOption, FlightOption, FlightPriority } from "./types";
 
 interface CityData {
   transport: {
@@ -32,10 +32,10 @@ const cityDatabase: Record<string, CityData> = {
       { type: "fine", label: "Fine Dining / Client Dinner", avgCost: 85, currency: "USD" },
     ],
     hotels: [
-      { name: "Rove Downtown", stars: 3, pricePerNight: 85, currency: "USD", rating: 4.3, bookingUrl: "https://www.booking.com/hotel/ae/rove-downtown.html", imageUrl: "", neighborhood: "Downtown Dubai" },
-      { name: "Hilton Dubai Al Habtoor City", stars: 4, pricePerNight: 150, currency: "USD", rating: 4.5, bookingUrl: "https://www.booking.com/hotel/ae/hilton-dubai-al-habtoor-city.html", imageUrl: "", neighborhood: "Al Habtoor City" },
-      { name: "JW Marriott Marquis", stars: 5, pricePerNight: 220, currency: "USD", rating: 4.7, bookingUrl: "https://www.booking.com/hotel/ae/jw-marriott-marquis-dubai.html", imageUrl: "", neighborhood: "Business Bay" },
-      { name: "Atlantis The Royal", stars: 5, pricePerNight: 450, currency: "USD", rating: 4.8, bookingUrl: "https://www.booking.com/hotel/ae/atlantis-the-royal.html", imageUrl: "", neighborhood: "Palm Jumeirah" },
+      { name: "Rove Downtown", stars: 3, pricePerNight: 85, currency: "USD", rating: 4.3, bookingUrl: "https://www.agoda.com/search/hotel/ae/rove-downtown.html", imageUrl: "", neighborhood: "Downtown Dubai" },
+      { name: "Hilton Dubai Al Habtoor City", stars: 4, pricePerNight: 150, currency: "USD", rating: 4.5, bookingUrl: "https://www.agoda.com/search/hotel/ae/hilton-dubai-al-habtoor-city.html", imageUrl: "", neighborhood: "Al Habtoor City" },
+      { name: "JW Marriott Marquis", stars: 5, pricePerNight: 220, currency: "USD", rating: 4.7, bookingUrl: "https://www.agoda.com/search/hotel/ae/jw-marriott-marquis-dubai.html", imageUrl: "", neighborhood: "Business Bay" },
+      { name: "Atlantis The Royal", stars: 5, pricePerNight: 450, currency: "USD", rating: 4.8, bookingUrl: "https://www.agoda.com/search/hotel/ae/atlantis-the-royal.html", imageUrl: "", neighborhood: "Palm Jumeirah" },
     ],
     timezone: "GST (UTC+4)",
     timezoneOffset: 4,
@@ -60,10 +60,10 @@ const cityDatabase: Record<string, CityData> = {
       { type: "fine", label: "Fine Dining / Client Dinner", avgCost: 120, currency: "USD" },
     ],
     hotels: [
-      { name: "Hampton Inn Miami Brickell", stars: 3, pricePerNight: 140, currency: "USD", rating: 4.2, bookingUrl: "https://www.booking.com/hotel/us/hampton-inn-miami-brickell.html", imageUrl: "", neighborhood: "Brickell" },
-      { name: "Hyatt Regency Miami", stars: 4, pricePerNight: 200, currency: "USD", rating: 4.4, bookingUrl: "https://www.booking.com/hotel/us/hyatt-regency-miami.html", imageUrl: "", neighborhood: "Downtown" },
-      { name: "Four Seasons Miami", stars: 5, pricePerNight: 380, currency: "USD", rating: 4.8, bookingUrl: "https://www.booking.com/hotel/us/four-seasons-miami.html", imageUrl: "", neighborhood: "Brickell" },
-      { name: "Mandarin Oriental Miami", stars: 5, pricePerNight: 450, currency: "USD", rating: 4.7, bookingUrl: "https://www.booking.com/hotel/us/mandarin-oriental-miami.html", imageUrl: "", neighborhood: "Brickell Key" },
+      { name: "Hampton Inn Miami Brickell", stars: 3, pricePerNight: 140, currency: "USD", rating: 4.2, bookingUrl: "https://www.agoda.com/search/hotel/us/hampton-inn-miami-brickell.html", imageUrl: "", neighborhood: "Brickell" },
+      { name: "Hyatt Regency Miami", stars: 4, pricePerNight: 200, currency: "USD", rating: 4.4, bookingUrl: "https://www.agoda.com/search/hotel/us/hyatt-regency-miami.html", imageUrl: "", neighborhood: "Downtown" },
+      { name: "Four Seasons Miami", stars: 5, pricePerNight: 380, currency: "USD", rating: 4.8, bookingUrl: "https://www.agoda.com/search/hotel/us/four-seasons-miami.html", imageUrl: "", neighborhood: "Brickell" },
+      { name: "Mandarin Oriental Miami", stars: 5, pricePerNight: 450, currency: "USD", rating: 4.7, bookingUrl: "https://www.agoda.com/search/hotel/us/mandarin-oriental-miami.html", imageUrl: "", neighborhood: "Brickell Key" },
     ],
     timezone: "EST (UTC-5)",
     timezoneOffset: -5,
@@ -88,9 +88,9 @@ const cityDatabase: Record<string, CityData> = {
       { type: "fine", label: "Fine Dining / Client Dinner", avgCost: 150, currency: "USD" },
     ],
     hotels: [
-      { name: "Pod 51", stars: 3, pricePerNight: 160, currency: "USD", rating: 4.1, bookingUrl: "https://www.booking.com/hotel/us/pod-51.html", imageUrl: "", neighborhood: "Midtown East" },
-      { name: "The Manhattan at Times Square", stars: 4, pricePerNight: 230, currency: "USD", rating: 4.3, bookingUrl: "https://www.booking.com/hotel/us/the-manhattan-times-square.html", imageUrl: "", neighborhood: "Midtown" },
-      { name: "The Peninsula New York", stars: 5, pricePerNight: 550, currency: "USD", rating: 4.8, bookingUrl: "https://www.booking.com/hotel/us/the-peninsula-new-york.html", imageUrl: "", neighborhood: "Fifth Avenue" },
+      { name: "Pod 51", stars: 3, pricePerNight: 160, currency: "USD", rating: 4.1, bookingUrl: "https://www.agoda.com/search/hotel/us/pod-51.html", imageUrl: "", neighborhood: "Midtown East" },
+      { name: "The Manhattan at Times Square", stars: 4, pricePerNight: 230, currency: "USD", rating: 4.3, bookingUrl: "https://www.agoda.com/search/hotel/us/the-manhattan-times-square.html", imageUrl: "", neighborhood: "Midtown" },
+      { name: "The Peninsula New York", stars: 5, pricePerNight: 550, currency: "USD", rating: 4.8, bookingUrl: "https://www.agoda.com/search/hotel/us/the-peninsula-new-york.html", imageUrl: "", neighborhood: "Fifth Avenue" },
     ],
     timezone: "EST (UTC-5)",
     timezoneOffset: -5,
@@ -115,9 +115,9 @@ const cityDatabase: Record<string, CityData> = {
       { type: "fine", label: "Fine Dining / Client Dinner", avgCost: 130, currency: "USD" },
     ],
     hotels: [
-      { name: "Premier Inn London City", stars: 3, pricePerNight: 130, currency: "USD", rating: 4.2, bookingUrl: "https://www.booking.com/hotel/gb/premier-inn-london-city.html", imageUrl: "", neighborhood: "City of London" },
-      { name: "DoubleTree by Hilton Tower of London", stars: 4, pricePerNight: 210, currency: "USD", rating: 4.4, bookingUrl: "https://www.booking.com/hotel/gb/doubletree-tower-london.html", imageUrl: "", neighborhood: "Tower Hill" },
-      { name: "The Savoy", stars: 5, pricePerNight: 600, currency: "USD", rating: 4.9, bookingUrl: "https://www.booking.com/hotel/gb/the-savoy.html", imageUrl: "", neighborhood: "Covent Garden" },
+      { name: "Premier Inn London City", stars: 3, pricePerNight: 130, currency: "USD", rating: 4.2, bookingUrl: "https://www.agoda.com/search/hotel/gb/premier-inn-london-city.html", imageUrl: "", neighborhood: "City of London" },
+      { name: "DoubleTree by Hilton Tower of London", stars: 4, pricePerNight: 210, currency: "USD", rating: 4.4, bookingUrl: "https://www.agoda.com/search/hotel/gb/doubletree-tower-london.html", imageUrl: "", neighborhood: "Tower Hill" },
+      { name: "The Savoy", stars: 5, pricePerNight: 600, currency: "USD", rating: 4.9, bookingUrl: "https://www.agoda.com/search/hotel/gb/the-savoy.html", imageUrl: "", neighborhood: "Covent Garden" },
     ],
     timezone: "GMT (UTC+0)",
     timezoneOffset: 0,
@@ -142,9 +142,9 @@ const cityDatabase: Record<string, CityData> = {
       { type: "fine", label: "Fine Dining / Omakase", avgCost: 120, currency: "USD" },
     ],
     hotels: [
-      { name: "Tokyu Stay Shinjuku", stars: 3, pricePerNight: 90, currency: "USD", rating: 4.3, bookingUrl: "https://www.booking.com/hotel/jp/tokyu-stay-shinjuku.html", imageUrl: "", neighborhood: "Shinjuku" },
-      { name: "Mitsui Garden Hotel Ginza", stars: 4, pricePerNight: 170, currency: "USD", rating: 4.5, bookingUrl: "https://www.booking.com/hotel/jp/mitsui-garden-ginza.html", imageUrl: "", neighborhood: "Ginza" },
-      { name: "Aman Tokyo", stars: 5, pricePerNight: 700, currency: "USD", rating: 4.9, bookingUrl: "https://www.booking.com/hotel/jp/aman-tokyo.html", imageUrl: "", neighborhood: "Otemachi" },
+      { name: "Tokyu Stay Shinjuku", stars: 3, pricePerNight: 90, currency: "USD", rating: 4.3, bookingUrl: "https://www.agoda.com/search/hotel/jp/tokyu-stay-shinjuku.html", imageUrl: "", neighborhood: "Shinjuku" },
+      { name: "Mitsui Garden Hotel Ginza", stars: 4, pricePerNight: 170, currency: "USD", rating: 4.5, bookingUrl: "https://www.agoda.com/search/hotel/jp/mitsui-garden-ginza.html", imageUrl: "", neighborhood: "Ginza" },
+      { name: "Aman Tokyo", stars: 5, pricePerNight: 700, currency: "USD", rating: 4.9, bookingUrl: "https://www.agoda.com/search/hotel/jp/aman-tokyo.html", imageUrl: "", neighborhood: "Otemachi" },
     ],
     timezone: "JST (UTC+9)",
     timezoneOffset: 9,
@@ -169,9 +169,9 @@ const cityDatabase: Record<string, CityData> = {
       { type: "fine", label: "Fine Dining", avgCost: 100, currency: "USD" },
     ],
     hotels: [
-      { name: "ibis Singapore", stars: 3, pricePerNight: 100, currency: "USD", rating: 4.1, bookingUrl: "https://www.booking.com/hotel/sg/ibis-singapore.html", imageUrl: "", neighborhood: "Bencoolen" },
-      { name: "Pan Pacific Singapore", stars: 4, pricePerNight: 200, currency: "USD", rating: 4.6, bookingUrl: "https://www.booking.com/hotel/sg/pan-pacific.html", imageUrl: "", neighborhood: "Marina Bay" },
-      { name: "Marina Bay Sands", stars: 5, pricePerNight: 400, currency: "USD", rating: 4.7, bookingUrl: "https://www.booking.com/hotel/sg/marina-bay-sands.html", imageUrl: "", neighborhood: "Marina Bay" },
+      { name: "ibis Singapore", stars: 3, pricePerNight: 100, currency: "USD", rating: 4.1, bookingUrl: "https://www.agoda.com/search/hotel/sg/ibis-singapore.html", imageUrl: "", neighborhood: "Bencoolen" },
+      { name: "Pan Pacific Singapore", stars: 4, pricePerNight: 200, currency: "USD", rating: 4.6, bookingUrl: "https://www.agoda.com/search/hotel/sg/pan-pacific.html", imageUrl: "", neighborhood: "Marina Bay" },
+      { name: "Marina Bay Sands", stars: 5, pricePerNight: 400, currency: "USD", rating: 4.7, bookingUrl: "https://www.agoda.com/search/hotel/sg/marina-bay-sands.html", imageUrl: "", neighborhood: "Marina Bay" },
     ],
     timezone: "SGT (UTC+8)",
     timezoneOffset: 8,
@@ -196,9 +196,9 @@ const cityDatabase: Record<string, CityData> = {
       { type: "fine", label: "Fine Dining", avgCost: 80, currency: "USD" },
     ],
     hotels: [
-      { name: "Nine Tree Premier Myeongdong", stars: 3, pricePerNight: 75, currency: "USD", rating: 4.3, bookingUrl: "https://www.booking.com/hotel/kr/nine-tree-premier-myeongdong.html", imageUrl: "", neighborhood: "Myeongdong" },
-      { name: "Lotte Hotel Seoul", stars: 4, pricePerNight: 180, currency: "USD", rating: 4.6, bookingUrl: "https://www.booking.com/hotel/kr/lotte-seoul.html", imageUrl: "", neighborhood: "Jung-gu" },
-      { name: "The Shilla Seoul", stars: 5, pricePerNight: 350, currency: "USD", rating: 4.8, bookingUrl: "https://www.booking.com/hotel/kr/the-shilla-seoul.html", imageUrl: "", neighborhood: "Jung-gu" },
+      { name: "Nine Tree Premier Myeongdong", stars: 3, pricePerNight: 75, currency: "USD", rating: 4.3, bookingUrl: "https://www.agoda.com/search/hotel/kr/nine-tree-premier-myeongdong.html", imageUrl: "", neighborhood: "Myeongdong" },
+      { name: "Lotte Hotel Seoul", stars: 4, pricePerNight: 180, currency: "USD", rating: 4.6, bookingUrl: "https://www.agoda.com/search/hotel/kr/lotte-seoul.html", imageUrl: "", neighborhood: "Jung-gu" },
+      { name: "The Shilla Seoul", stars: 5, pricePerNight: 350, currency: "USD", rating: 4.8, bookingUrl: "https://www.agoda.com/search/hotel/kr/the-shilla-seoul.html", imageUrl: "", neighborhood: "Jung-gu" },
     ],
     timezone: "KST (UTC+9)",
     timezoneOffset: 9,
@@ -223,9 +223,9 @@ const cityDatabase: Record<string, CityData> = {
       { type: "fine", label: "Fine Dining", avgCost: 110, currency: "USD" },
     ],
     hotels: [
-      { name: "Butterfly on Morrison", stars: 3, pricePerNight: 90, currency: "USD", rating: 4.1, bookingUrl: "https://www.booking.com/hotel/hk/butterfly-on-morrison.html", imageUrl: "", neighborhood: "Wan Chai" },
-      { name: "Marco Polo Hongkong", stars: 4, pricePerNight: 175, currency: "USD", rating: 4.4, bookingUrl: "https://www.booking.com/hotel/hk/marco-polo-hongkong.html", imageUrl: "", neighborhood: "Tsim Sha Tsui" },
-      { name: "The Peninsula Hong Kong", stars: 5, pricePerNight: 500, currency: "USD", rating: 4.9, bookingUrl: "https://www.booking.com/hotel/hk/the-peninsula.html", imageUrl: "", neighborhood: "Tsim Sha Tsui" },
+      { name: "Butterfly on Morrison", stars: 3, pricePerNight: 90, currency: "USD", rating: 4.1, bookingUrl: "https://www.agoda.com/search/hotel/hk/butterfly-on-morrison.html", imageUrl: "", neighborhood: "Wan Chai" },
+      { name: "Marco Polo Hongkong", stars: 4, pricePerNight: 175, currency: "USD", rating: 4.4, bookingUrl: "https://www.agoda.com/search/hotel/hk/marco-polo-hongkong.html", imageUrl: "", neighborhood: "Tsim Sha Tsui" },
+      { name: "The Peninsula Hong Kong", stars: 5, pricePerNight: 500, currency: "USD", rating: 4.9, bookingUrl: "https://www.agoda.com/search/hotel/hk/the-peninsula.html", imageUrl: "", neighborhood: "Tsim Sha Tsui" },
     ],
     timezone: "HKT (UTC+8)",
     timezoneOffset: 8,
@@ -250,9 +250,9 @@ const cityDatabase: Record<string, CityData> = {
       { type: "fine", label: "Fine Dining", avgCost: 140, currency: "USD" },
     ],
     hotels: [
-      { name: "ibis Paris Montmartre", stars: 3, pricePerNight: 110, currency: "USD", rating: 4.0, bookingUrl: "https://www.booking.com/hotel/fr/ibis-paris-montmartre.html", imageUrl: "", neighborhood: "Montmartre" },
-      { name: "Hôtel Monge", stars: 4, pricePerNight: 220, currency: "USD", rating: 4.6, bookingUrl: "https://www.booking.com/hotel/fr/hotel-monge.html", imageUrl: "", neighborhood: "Latin Quarter" },
-      { name: "Le Bristol Paris", stars: 5, pricePerNight: 800, currency: "USD", rating: 4.9, bookingUrl: "https://www.booking.com/hotel/fr/le-bristol-paris.html", imageUrl: "", neighborhood: "Faubourg Saint-Honoré" },
+      { name: "ibis Paris Montmartre", stars: 3, pricePerNight: 110, currency: "USD", rating: 4.0, bookingUrl: "https://www.agoda.com/search/hotel/fr/ibis-paris-montmartre.html", imageUrl: "", neighborhood: "Montmartre" },
+      { name: "Hôtel Monge", stars: 4, pricePerNight: 220, currency: "USD", rating: 4.6, bookingUrl: "https://www.agoda.com/search/hotel/fr/hotel-monge.html", imageUrl: "", neighborhood: "Latin Quarter" },
+      { name: "Le Bristol Paris", stars: 5, pricePerNight: 800, currency: "USD", rating: 4.9, bookingUrl: "https://www.agoda.com/search/hotel/fr/le-bristol-paris.html", imageUrl: "", neighborhood: "Faubourg Saint-Honoré" },
     ],
     timezone: "CET (UTC+1)",
     timezoneOffset: 1,
@@ -277,9 +277,9 @@ const cityDatabase: Record<string, CityData> = {
       { type: "fine", label: "Fine Dining", avgCost: 140, currency: "USD" },
     ],
     hotels: [
-      { name: "HI San Francisco Downtown", stars: 3, pricePerNight: 150, currency: "USD", rating: 4.0, bookingUrl: "https://www.booking.com/hotel/us/hi-sf-downtown.html", imageUrl: "", neighborhood: "Union Square" },
-      { name: "Hotel Nikko San Francisco", stars: 4, pricePerNight: 250, currency: "USD", rating: 4.4, bookingUrl: "https://www.booking.com/hotel/us/nikko-san-francisco.html", imageUrl: "", neighborhood: "Union Square" },
-      { name: "The St. Regis San Francisco", stars: 5, pricePerNight: 500, currency: "USD", rating: 4.8, bookingUrl: "https://www.booking.com/hotel/us/st-regis-san-francisco.html", imageUrl: "", neighborhood: "SoMa" },
+      { name: "HI San Francisco Downtown", stars: 3, pricePerNight: 150, currency: "USD", rating: 4.0, bookingUrl: "https://www.agoda.com/search/hotel/us/hi-sf-downtown.html", imageUrl: "", neighborhood: "Union Square" },
+      { name: "Hotel Nikko San Francisco", stars: 4, pricePerNight: 250, currency: "USD", rating: 4.4, bookingUrl: "https://www.agoda.com/search/hotel/us/nikko-san-francisco.html", imageUrl: "", neighborhood: "Union Square" },
+      { name: "The St. Regis San Francisco", stars: 5, pricePerNight: 500, currency: "USD", rating: 4.8, bookingUrl: "https://www.agoda.com/search/hotel/us/st-regis-san-francisco.html", imageUrl: "", neighborhood: "SoMa" },
     ],
     timezone: "PST (UTC-8)",
     timezoneOffset: -8,
@@ -304,9 +304,9 @@ const cityDatabase: Record<string, CityData> = {
       { type: "fine", label: "Fine Dining", avgCost: 60, currency: "USD" },
     ],
     hotels: [
-      { name: "ibis Bangkok Sukhumvit", stars: 3, pricePerNight: 40, currency: "USD", rating: 4.1, bookingUrl: "https://www.booking.com/hotel/th/ibis-bangkok-sukhumvit.html", imageUrl: "", neighborhood: "Sukhumvit" },
-      { name: "Grande Centre Point Ratchadamri", stars: 4, pricePerNight: 90, currency: "USD", rating: 4.5, bookingUrl: "https://www.booking.com/hotel/th/grande-centre-point-ratchadamri.html", imageUrl: "", neighborhood: "Ratchadamri" },
-      { name: "Mandarin Oriental Bangkok", stars: 5, pricePerNight: 300, currency: "USD", rating: 4.9, bookingUrl: "https://www.booking.com/hotel/th/mandarin-oriental.html", imageUrl: "", neighborhood: "Riverside" },
+      { name: "ibis Bangkok Sukhumvit", stars: 3, pricePerNight: 40, currency: "USD", rating: 4.1, bookingUrl: "https://www.agoda.com/search/hotel/th/ibis-bangkok-sukhumvit.html", imageUrl: "", neighborhood: "Sukhumvit" },
+      { name: "Grande Centre Point Ratchadamri", stars: 4, pricePerNight: 90, currency: "USD", rating: 4.5, bookingUrl: "https://www.agoda.com/search/hotel/th/grande-centre-point-ratchadamri.html", imageUrl: "", neighborhood: "Ratchadamri" },
+      { name: "Mandarin Oriental Bangkok", stars: 5, pricePerNight: 300, currency: "USD", rating: 4.9, bookingUrl: "https://www.agoda.com/search/hotel/th/mandarin-oriental.html", imageUrl: "", neighborhood: "Riverside" },
     ],
     timezone: "ICT (UTC+7)",
     timezoneOffset: 7,
@@ -333,9 +333,9 @@ const defaultCityData: CityData = {
     { type: "fine", label: "Fine Dining", avgCost: 100, currency: "USD" },
   ],
   hotels: [
-    { name: "3-Star Business Hotel", stars: 3, pricePerNight: 100, currency: "USD", rating: 4.0, bookingUrl: "https://www.booking.com", imageUrl: "", neighborhood: "City Center" },
-    { name: "4-Star Business Hotel", stars: 4, pricePerNight: 180, currency: "USD", rating: 4.4, bookingUrl: "https://www.booking.com", imageUrl: "", neighborhood: "City Center" },
-    { name: "5-Star Luxury Hotel", stars: 5, pricePerNight: 350, currency: "USD", rating: 4.7, bookingUrl: "https://www.booking.com", imageUrl: "", neighborhood: "City Center" },
+    { name: "3-Star Business Hotel", stars: 3, pricePerNight: 100, currency: "USD", rating: 4.0, bookingUrl: "https://www.agoda.com/search", imageUrl: "", neighborhood: "City Center" },
+    { name: "4-Star Business Hotel", stars: 4, pricePerNight: 180, currency: "USD", rating: 4.4, bookingUrl: "https://www.agoda.com/search", imageUrl: "", neighborhood: "City Center" },
+    { name: "5-Star Luxury Hotel", stars: 5, pricePerNight: 350, currency: "USD", rating: 4.7, bookingUrl: "https://www.agoda.com/search", imageUrl: "", neighborhood: "City Center" },
   ],
   timezone: "UTC",
   timezoneOffset: 0,
@@ -353,7 +353,8 @@ export function getCityData(city: string): CityData {
 export function generateFlightOptions(
   from: string,
   to: string,
-  date: string
+  date: string,
+  priority: FlightPriority = "rating"
 ): FlightOption[] {
   const airlines = [
     { name: "Korean Air", logo: "🇰🇷", credibility: 92 },
@@ -421,10 +422,30 @@ export function generateFlightOptions(
   }
 
   return options.sort((a, b) => {
-    const scoreA = a.credibilityScore * 0.3 - a.stops * 15 + (1000 - a.price) * 0.02;
-    const scoreB = b.credibilityScore * 0.3 - b.stops * 15 + (1000 - b.price) * 0.02;
-    return scoreB - scoreA;
+    switch (priority) {
+      case "duration": {
+        const durA = parseDuration(a.duration);
+        const durB = parseDuration(b.duration);
+        return durA - durB;
+      }
+      case "rating":
+        return b.credibilityScore - a.credibilityScore;
+      case "stops":
+        return a.stops - b.stops || a.price - b.price;
+      case "price":
+        return a.price - b.price;
+      default: {
+        const scoreA = a.credibilityScore * 0.3 - a.stops * 15 + (1000 - a.price) * 0.02;
+        const scoreB = b.credibilityScore * 0.3 - b.stops * 15 + (1000 - b.price) * 0.02;
+        return scoreB - scoreA;
+      }
+    }
   });
+}
+
+function parseDuration(dur: string): number {
+  const match = dur.match(/(\d+)h\s*(\d+)m/);
+  return match ? parseInt(match[1]) * 60 + parseInt(match[2]) : 9999;
 }
 
 function getBasePrice(from: string, to: string): number {

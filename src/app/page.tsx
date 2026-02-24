@@ -9,7 +9,7 @@ export default function Home() {
       <Header />
       <main className="min-h-screen">
         {/* Hero */}
-        <section className="relative pt-32 pb-20 px-6 overflow-hidden">
+        <section className="relative pt-24 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white" />
           <div className="absolute top-20 left-1/4 w-96 h-96 bg-gray-100/40 rounded-full blur-3xl" />
           <div className="absolute bottom-10 right-1/4 w-80 h-80 bg-gray-50/60 rounded-full blur-3xl" />
@@ -20,11 +20,11 @@ export default function Home() {
               Business Trip Planning Made Simple
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 tracking-tight mb-6 animate-slide-up">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 tracking-tight mb-4 sm:mb-6 animate-slide-up">
               PLANO
             </h1>
 
-            <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed animate-slide-up" style={{ animationDelay: "0.1s" }}>
+            <p className="text-base sm:text-lg text-gray-500 max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed animate-slide-up px-2" style={{ animationDelay: "0.1s" }}>
               Get a detailed cost breakdown for your entire business trip.
               Flights, hotels, transportation, meals — all researched and
               calculated for you in one receipt.
@@ -42,10 +42,10 @@ export default function Home() {
         </section>
 
         {/* Features */}
-        <section className="py-20 px-6 bg-gray-50/30">
+        <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gray-50/30">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-gray-900 mb-3">
+            <div className="text-center mb-10 sm:mb-16">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
                 Everything You Need to Know
               </h2>
               <p className="text-gray-400 text-sm">
@@ -98,10 +98,10 @@ export default function Home() {
         </section>
 
         {/* How it works */}
-        <section id="how-it-works" className="py-20 px-6">
+        <section id="how-it-works" className="py-12 sm:py-20 px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-gray-900 mb-3">
+            <div className="text-center mb-10 sm:mb-16">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
                 Three Simple Steps
               </h2>
               <p className="text-gray-400 text-sm">
@@ -152,16 +152,16 @@ export default function Home() {
         </section>
 
         {/* Example Receipt */}
-        <section className="py-20 px-6 bg-gray-50/30">
+        <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gray-50/30">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
               Your Trip, One Receipt
             </h2>
             <p className="text-gray-400 text-sm mb-12">
               Example: Seoul → Dubai → Miami → Seoul
             </p>
 
-            <div className="glass-card p-8 text-left">
+            <div className="glass-card p-4 sm:p-8 text-left">
               <div className="space-y-4 mb-6">
                 {[
                   { label: "Seoul → Dubai", sub: "7 nights · Korean Air", cost: "$650" },
@@ -201,9 +201,9 @@ export default function Home() {
         </section>
 
         {/* CTA */}
-        <section className="py-24 px-6">
+        <section className="py-16 sm:py-24 px-4 sm:px-6">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
               Ready to Plan?
             </h2>
             <p className="text-gray-400 mb-8">
@@ -219,8 +219,8 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-gray-100 py-8 px-6">
-          <div className="max-w-6xl mx-auto flex items-center justify-between text-xs text-gray-400">
+        <footer className="border-t border-gray-100 py-6 sm:py-8 px-4 sm:px-6">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1 text-xs text-gray-400">
             <span>PLANO — Business Trip Cost Analyst</span>
             <span>Built for business travelers</span>
           </div>
