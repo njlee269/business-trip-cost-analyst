@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AuthGate from "@/components/AuthGate";
 
 export const metadata: Metadata = {
-  title: "How Much Is It? — Business Trip Cost Analyst",
+  title: "PLANO — Business Trip Cost Analyst",
   description:
     "Plan your business trip with detailed cost breakdowns for flights, hotels, transportation, and meals. Get real-time estimates and smart itineraries.",
 };
@@ -20,7 +21,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen bg-white antialiased">{children}</body>
+      <body className="min-h-screen bg-white antialiased">
+        <AuthGate>{children}</AuthGate>
+      </body>
     </html>
   );
 }

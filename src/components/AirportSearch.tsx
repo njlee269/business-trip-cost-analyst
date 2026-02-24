@@ -58,7 +58,7 @@ export default function AirportSearch({
   const displayValue = value ? `${value.city} (${value.code})` : "";
 
   return (
-    <div ref={wrapperRef} className="relative">
+    <div ref={wrapperRef} className="relative" style={{ zIndex: isOpen ? 100 : 1 }}>
       <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">
         {label}
       </label>

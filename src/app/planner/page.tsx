@@ -17,7 +17,7 @@ export default function PlannerPage() {
   const handleSubmit = async (plan: TripPlan) => {
     setIsLoading(true);
 
-    await new Promise((r) => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 400));
 
     const result = calculateTripCosts(plan);
     setSummary(result);

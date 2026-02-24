@@ -21,9 +21,7 @@ export default function Home() {
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 tracking-tight mb-6 animate-slide-up">
-              How Much
-              <br />
-              <span className="text-gray-400">Is It?</span>
+              PLANO
             </h1>
 
             <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed animate-slide-up" style={{ animationDelay: "0.1s" }}>
@@ -223,7 +221,7 @@ export default function Home() {
         {/* Footer */}
         <footer className="border-t border-gray-100 py-8 px-6">
           <div className="max-w-6xl mx-auto flex items-center justify-between text-xs text-gray-400">
-            <span>How Much Is It? — Business Trip Cost Analyst</span>
+            <span>PLANO — Business Trip Cost Analyst</span>
             <span>Built for business travelers</span>
           </div>
         </footer>
