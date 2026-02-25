@@ -63,12 +63,12 @@ body {
   }
 
   .glass-button-primary {
-    @apply glass-button bg-gray-900 border-gray-800 text-white;
+    @apply glass-button bg-[#4285F4] border-[#3B78DC] text-white;
   }
 
   .glass-button-primary:hover {
-    @apply bg-gray-800 border-gray-700 text-white;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1);
+    @apply bg-[#3B78DC] border-[#3470CF] text-white;
+    box-shadow: 0 8px 25px rgba(66, 133, 244, 0.35), 0 3px 6px rgba(66, 133, 244, 0.15);
   }
 
   .glass-input {

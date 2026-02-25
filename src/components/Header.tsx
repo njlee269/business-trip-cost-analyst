@@ -10,7 +10,7 @@ export default function Header() {
         <Link href="/" className="flex items-center gap-3 group">
           <div className="w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center shadow-btn group-hover:shadow-btn-hover transition-all duration-300 group-hover:-translate-y-0.5 overflow-hidden">
             <Image
-              src={`${process.env.__NEXT_ROUTER_BASEPATH || ""}/logo.png`}
+              src={`${process.env.__NEXT_ROUTER_BASEPATH || ""}/logo2.png`}
               alt="PLANO"
               width={22}
               height={22}

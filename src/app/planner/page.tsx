@@ -95,7 +95,7 @@ export default function PlannerPage() {
                           : "bg-gray-50 text-gray-500 hover:bg-gray-100"
                       }`}
                     >
-                      Itinerary
+                      Schedule
                     </button>
                   </>
                 )}

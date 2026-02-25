@@ -61,7 +61,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
       <div className="w-full max-w-sm text-center">
         <div className="mb-8">
           <div className="flex items-center justify-center mb-4">
-            <img src={`${process.env.__NEXT_ROUTER_BASEPATH || ""}/logo.png`} alt="PLANO" width={40} height={40} className="opacity-90" />
+            <img src={`${process.env.__NEXT_ROUTER_BASEPATH || ""}/logo2.png`} alt="PLANO" width={40} height={40} className="opacity-90" />
           </div>
           <h1 className="text-xl font-bold text-gray-900 tracking-tight">PLANO</h1>
           <p className="text-xs text-gray-400 mt-1">Enter access code to continue</p>

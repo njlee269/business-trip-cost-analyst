@@ -4,7 +4,6 @@ import {
   DestinationCost,
   TransportOption,
   FoodBreakdown,
-  FlightPriority,
 } from "./types";
 import { getCityData, generateFlightOptions } from "./costData";
 
@@ -43,7 +42,7 @@ export function calculateTripCosts(plan: TripPlan): TripCostSummary {
       leg.from.code,
       leg.to.code,
       leg.departureDate,
-      plan.flightPriority
+      plan.flightPriorities
     );
     const selectedFlight = flights[0] || null;
     const flightCost = selectedFlight?.price || 0;

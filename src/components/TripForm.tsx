@@ -12,20 +12,15 @@ interface TripFormProps {
 let legCounter = 0;
 function createLeg(from: Airport | null = null, to: Airport | null = null, isReturn = false): TripLeg {
   legCounter++;
-  return {
-    id: `leg-${legCounter}-${Date.now()}`,
-    from,
-    to,
-    departureDate: "",
-    isReturn,
-  };
+  return { id: `leg-${legCounter}-${Date.now()}`, from, to, departureDate: "", isReturn };
 }
 
 export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
   const [legs, setLegs] = useState<TripLeg[]>([createLeg()]);
   const [mealsPerDay, setMealsPerDay] = useState(2);
   const [hotelStars, setHotelStars] = useState(4);
-  const [flightPriority, setFlightPriority] = useState<FlightPriority>("rating");
+  const [flightPriorities, setFlightPriorities] = useState<FlightPriority[]>(["rating"]);
+  const [isRoundTrip, setIsRoundTrip] = useState(false);
 
   const origin = legs[0]?.from;
 
@@ -35,9 +30,7 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
       next[index] = { ...next[index], ...updates };
       if (index === 0 && updates.from) {
         for (let i = 1; i < next.length; i++) {
-          if (next[i].isReturn) {
-            next[i] = { ...next[i], to: updates.from };
-          }
+          if (next[i].isReturn) next[i] = { ...next[i], to: updates.from };
         }
       }
       return next;
@@ -45,15 +38,35 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
   };
 
   const addDestination = () => {
-    const lastLeg = legs[legs.length - 1];
-    const fromAirport = lastLeg?.to || null;
-    setLegs((prev) => [...prev, createLeg(fromAirport)]);
+    const nonReturn = legs.filter((l) => !l.isReturn);
+    const lastNonReturn = nonReturn[nonReturn.length - 1];
+    const fromAirport = lastNonReturn?.to || null;
+    setLegs((prev) => {
+      const returnIdx = prev.findIndex((l) => l.isReturn);
+      if (returnIdx >= 0) {
+        const newLeg = createLeg(fromAirport);
+        const next = [...prev];
+        next.splice(returnIdx, 0, newLeg);
+        if (next[returnIdx + 1]?.isReturn) {
+          next[returnIdx + 1] = { ...next[returnIdx + 1], from: newLeg.to };
+        }
+        return next;
+      }
+      return [...prev, createLeg(fromAirport)];
+    });
   };
 
-  const addReturnHome = () => {
-    const lastLeg = legs[legs.length - 1];
-    const fromAirport = lastLeg?.to || null;
-    setLegs((prev) => [...prev, createLeg(fromAirport, origin, true)]);
+  const toggleRoundTrip = () => {
+    if (isRoundTrip) {
+      setLegs((prev) => prev.filter((l) => !l.isReturn));
+      setIsRoundTrip(false);
+    } else {
+      if (!origin) return;
+      const lastNonReturn = [...legs].filter((l) => !l.isReturn).pop();
+      const fromAirport = lastNonReturn?.to || null;
+      setLegs((prev) => [...prev.filter((l) => !l.isReturn), createLeg(fromAirport, origin, true)]);
+      setIsRoundTrip(true);
+    }
   };
 
   const removeLeg = (index: number) => {
@@ -61,31 +74,44 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
     setLegs((prev) => {
       const next = prev.filter((_, i) => i !== index);
       for (let i = 1; i < next.length; i++) {
-        next[i] = { ...next[i], from: next[i - 1].to || null };
+        if (!next[i].isReturn) next[i] = { ...next[i], from: next[i - 1].to || null };
+      }
+      const returnLeg = next.find((l) => l.isReturn);
+      if (returnLeg) {
+        const lastNonReturn = next.filter((l) => !l.isReturn).pop();
+        const idx = next.indexOf(returnLeg);
+        next[idx] = { ...returnLeg, from: lastNonReturn?.to || null };
       }
       return next;
     });
   };
 
-  const handleSubmit = () => {
-    const plan: TripPlan = {
-      legs,
-      mealsPerDay,
-      hotelStars,
-      travelers: 1,
-      flightPriority,
-    };
-    onSubmit(plan);
+  const togglePriority = (p: FlightPriority) => {
+    setFlightPriorities((prev) =>
+      prev.includes(p) ? (prev.length > 1 ? prev.filter((x) => x !== p) : prev) : [...prev, p]
+    );
   };
 
-  const isValid = legs.every(
-    (leg) => leg.from && leg.to && leg.departureDate
-  );
+  const handleSubmit = () => {
+    onSubmit({ legs, mealsPerDay, hotelStars, travelers: 1, flightPriorities, isRoundTrip });
+  };
 
+  const isValid = legs.every((leg) => leg.from && leg.to && leg.departureDate);
   const hasReturnLeg = legs.some((l) => l.isReturn);
 
   return (
     <div className="space-y-6">
+      {/* Round Trip Toggle */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={toggleRoundTrip}
+          className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${isRoundTrip ? "bg-blue-500" : "bg-gray-200"}`}
+        >
+          <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${isRoundTrip ? "translate-x-5" : ""}`} />
+        </button>
+        <span className="text-sm font-medium text-gray-600">Round Trip{origin ? ` (back to ${origin.city})` : ""}</span>
+      </div>
+
       <div className="space-y-4" style={{ position: "relative" }}>
         {legs.map((leg, index) => (
           <div
@@ -95,30 +121,15 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-2">
-                <div
-                  className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${
-                    leg.isReturn
-                      ? "bg-gray-200 text-gray-600"
-                      : "bg-gray-900 text-white"
-                  }`}
-                >
+                <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${leg.isReturn ? "bg-gray-200 text-gray-600" : "bg-gray-900 text-white"}`}>
                   {leg.isReturn ? "↩" : index + 1}
                 </div>
                 <span className="text-sm font-medium text-gray-600">
-                  {index === 0
-                    ? "Starting Point"
-                    : leg.isReturn
-                    ? "Return Home"
-                    : `Destination ${index}`}
+                  {index === 0 ? "Starting Point" : leg.isReturn ? "Return Home" : `Destination ${index}`}
                 </span>
               </div>
-              {index > 0 && (
-                <button
-                  onClick={() => removeLeg(index)}
-                  className="text-gray-300 hover:text-red-400 transition-colors text-sm p-1"
-                >
-                  ✕
-                </button>
+              {index > 0 && !leg.isReturn && (
+                <button onClick={() => removeLeg(index)} className="text-gray-300 hover:text-red-400 transition-colors text-sm p-1">✕</button>
               )}
             </div>
 
@@ -130,7 +141,6 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
                 label={index === 0 ? "From" : "From (auto)"}
                 disabled={index > 0}
               />
-
               <AirportSearch
                 value={leg.to}
                 onChange={(airport) => updateLeg(index, { to: airport })}
@@ -138,23 +148,16 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
                 label="To"
                 disabled={leg.isReturn}
               />
-
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">
-                  Departure Date
+                  {leg.isReturn ? "Return Date" : "Departure Date"}
                 </label>
                 <input
                   type="date"
                   value={leg.departureDate}
-                  onChange={(e) =>
-                    updateLeg(index, { departureDate: e.target.value })
-                  }
+                  onChange={(e) => updateLeg(index, { departureDate: e.target.value })}
                   className="glass-input text-sm"
-                  min={
-                    index > 0 && legs[index - 1]?.departureDate
-                      ? legs[index - 1].departureDate
-                      : new Date().toISOString().split("T")[0]
-                  }
+                  min={index > 0 && legs[index - 1]?.departureDate ? legs[index - 1].departureDate : new Date().toISOString().split("T")[0]}
                 />
               </div>
             </div>
@@ -165,19 +168,14 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
       <div className="flex flex-wrap gap-3">
         <button onClick={addDestination} className="glass-button text-sm group">
           <span className="inline-flex items-center gap-2">
-            <span className="w-5 h-5 rounded-md bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center text-gray-500 text-xs transition-colors">
-              +
-            </span>
+            <span className="w-5 h-5 rounded-md bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center text-gray-500 text-xs transition-colors">+</span>
             Add Destination
           </span>
         </button>
-
-        {origin && !hasReturnLeg && (
-          <button onClick={addReturnHome} className="glass-button text-sm group">
+        {origin && !hasReturnLeg && !isRoundTrip && (
+          <button onClick={toggleRoundTrip} className="glass-button text-sm group">
             <span className="inline-flex items-center gap-2">
-              <span className="w-5 h-5 rounded-md bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center text-gray-500 text-xs transition-colors">
-                ↩
-              </span>
+              <span className="w-5 h-5 rounded-md bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center text-gray-500 text-xs transition-colors">↩</span>
               Back Home ({origin.city})
             </span>
           </button>
@@ -185,56 +183,31 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
       </div>
 
       <div className="glass-card p-3 sm:p-5">
-        <h3 className="text-sm font-medium text-gray-600 mb-4">
-          Trip Preferences
-        </h3>
+        <h3 className="text-sm font-medium text-gray-600 mb-4">Trip Preferences</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">
-              Meals per Day
-            </label>
+            <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Meals per Day</label>
             <div className="flex gap-2">
               {[1, 2, 3].map((n) => (
-                <button
-                  key={n}
-                  onClick={() => setMealsPerDay(n)}
-                  className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    mealsPerDay === n
-                      ? "bg-gray-900 text-white shadow-btn"
-                      : "bg-gray-50 text-gray-500 hover:bg-gray-100"
-                  }`}
-                >
+                <button key={n} onClick={() => setMealsPerDay(n)} className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${mealsPerDay === n ? "bg-gray-900 text-white shadow-btn" : "bg-gray-50 text-gray-500 hover:bg-gray-100"}`}>
                   {n} meal{n > 1 ? "s" : ""}
                 </button>
               ))}
             </div>
           </div>
-
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">
-              Hotel Preference
-            </label>
+            <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Hotel Preference</label>
             <div className="flex gap-2">
               {[3, 4, 5].map((n) => (
-                <button
-                  key={n}
-                  onClick={() => setHotelStars(n)}
-                  className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    hotelStars === n
-                      ? "bg-gray-900 text-white shadow-btn"
-                      : "bg-gray-50 text-gray-500 hover:bg-gray-100"
-                  }`}
-                >
+                <button key={n} onClick={() => setHotelStars(n)} className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${hotelStars === n ? "bg-gray-900 text-white shadow-btn" : "bg-gray-50 text-gray-500 hover:bg-gray-100"}`}>
                   {"★".repeat(n)}
                 </button>
               ))}
             </div>
           </div>
-
           <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">
-              Flight Priority
-            </label>
+            <label className="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Flight Priority</label>
+            <p className="text-[10px] text-gray-400 mb-2">Select one or more — flights are ranked by a blend of your picks</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {([
                 { key: "duration", label: "Shortest", icon: "⏱" },
@@ -244,9 +217,9 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
               ] as const).map((opt) => (
                 <button
                   key={opt.key}
-                  onClick={() => setFlightPriority(opt.key)}
+                  onClick={() => togglePriority(opt.key)}
                   className={`py-2.5 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-center gap-1.5 ${
-                    flightPriority === opt.key
+                    flightPriorities.includes(opt.key)
                       ? "bg-gray-900 text-white shadow-btn"
                       : "bg-gray-50 text-gray-500 hover:bg-gray-100"
                   }`}
@@ -263,20 +236,14 @@ export default function TripForm({ onSubmit, isLoading }: TripFormProps) {
       <button
         onClick={handleSubmit}
         disabled={!isValid || isLoading}
-        className={`w-full py-4 rounded-2xl text-base font-semibold transition-all duration-300 ${
-          isValid && !isLoading
-            ? "glass-button-primary !py-4 !text-base"
-            : "bg-gray-100 text-gray-400 cursor-not-allowed"
-        }`}
+        className={`w-full py-4 rounded-2xl text-base font-semibold transition-all duration-300 ${isValid && !isLoading ? "glass-button-primary !py-4 !text-base" : "bg-gray-100 text-gray-400 cursor-not-allowed"}`}
       >
         {isLoading ? (
           <span className="inline-flex items-center gap-2">
             <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             Analyzing your trip...
           </span>
-        ) : (
-          "Calculate Trip Cost"
-        )}
+        ) : "Calculate Trip Cost"}
       </button>
     </div>
   );

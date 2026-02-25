@@ -20,7 +20,8 @@ export interface TripPlan {
   mealsPerDay: number;
   hotelStars: number;
   travelers: number;
-  flightPriority: FlightPriority;
+  flightPriorities: FlightPriority[];
+  isRoundTrip: boolean;
 }
 
 export interface SavedTrip {

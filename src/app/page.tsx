@@ -10,13 +10,13 @@ export default function Home() {
       <main className="min-h-screen">
         {/* Hero */}
         <section className="relative pt-24 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white" />
-          <div className="absolute top-20 left-1/4 w-96 h-96 bg-gray-100/40 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-1/4 w-80 h-80 bg-gray-50/60 rounded-full blur-3xl" />
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-50/60 to-white" />
+          <div className="absolute top-20 left-1/4 w-96 h-96 bg-blue-100/30 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-1/4 w-80 h-80 bg-blue-50/40 rounded-full blur-3xl" />
 
           <div className="relative max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-gray-50 border border-gray-100 rounded-full text-xs text-gray-500 mb-8 animate-fade-in">
-              <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-xs text-[#4285F4] mb-8 animate-fade-in">
+              <span className="w-1.5 h-1.5 bg-[#4285F4] rounded-full" />
               Business Trip Planning Made Simple
             </div>
 
@@ -134,7 +134,7 @@ export default function Home() {
                   key={i}
                   className="glass-card p-6 flex items-start gap-6"
                 >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gray-900 flex items-center justify-center text-white font-bold text-sm">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#4285F4] flex items-center justify-center text-white font-bold text-sm">
                     {item.step}
                   </div>
                   <div>

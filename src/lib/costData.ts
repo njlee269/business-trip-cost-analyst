@@ -316,6 +316,88 @@ const cityDatabase: Record<string, CityData> = {
     airportToHotelKm: 30,
     airportToHotelMinutes: 35,
   },
+  Jakarta: {
+    transport: {
+      mainMode: "Grab / TransJakarta",
+      options: [
+        { type: "Grab", icon: "🚗", description: "Grab (avg city ride)", costPerTrip: 3, tripsPerDay: 4, currency: "USD", notes: "GrabCar or GrabBike" },
+        { type: "Airport Transfer", icon: "✈️", description: "CGK to CBD (Sudirman area)", costPerTrip: 15, tripsPerDay: 0, currency: "USD", notes: "~60-90 min depending on traffic" },
+        { type: "TransJakarta", icon: "🚌", description: "TransJakarta BRT", costPerTrip: 0.25, tripsPerDay: 3, currency: "USD", notes: "Bus Rapid Transit system" },
+        { type: "MRT", icon: "🚇", description: "Jakarta MRT", costPerTrip: 0.7, tripsPerDay: 3, currency: "USD", notes: "North-South line covers CBD" },
+      ],
+    },
+    meals: [
+      { type: "budget", label: "Warung / Street Food", avgCost: 3, currency: "USD" },
+      { type: "mid", label: "Restaurant", avgCost: 12, currency: "USD" },
+      { type: "fine", label: "Fine Dining / Client", avgCost: 50, currency: "USD" },
+    ],
+    hotels: [
+      { name: "Ibis Jakarta Harmoni", stars: 3, pricePerNight: 35, currency: "USD", rating: 4.0, bookingUrl: "https://www.agoda.com/search", imageUrl: "", neighborhood: "Harmoni" },
+      { name: "Pullman Jakarta Indonesia", stars: 4, pricePerNight: 80, currency: "USD", rating: 4.5, bookingUrl: "https://www.agoda.com/search", imageUrl: "", neighborhood: "Thamrin" },
+      { name: "The Ritz-Carlton Jakarta", stars: 5, pricePerNight: 180, currency: "USD", rating: 4.8, bookingUrl: "https://www.agoda.com/search", imageUrl: "", neighborhood: "Mega Kuningan" },
+    ],
+    timezone: "WIB (UTC+7)",
+    timezoneOffset: 7,
+    currency: "IDR",
+    currencySymbol: "Rp",
+    exchangeRateToUSD: 0.000063,
+    airportToHotelKm: 30,
+    airportToHotelMinutes: 75,
+  },
+  Bali: {
+    transport: {
+      mainMode: "Grab / Private Driver",
+      options: [
+        { type: "Grab", icon: "🚗", description: "Grab (avg ride)", costPerTrip: 3, tripsPerDay: 3, currency: "USD", notes: "Some areas restrict Grab" },
+        { type: "Airport Transfer", icon: "✈️", description: "Airport to Seminyak/Ubud", costPerTrip: 12, tripsPerDay: 0, currency: "USD", notes: "~30-60 min" },
+        { type: "Private Driver", icon: "🚐", description: "Daily hire driver", costPerTrip: 35, tripsPerDay: 1, currency: "USD", notes: "Full day with driver, common option" },
+      ],
+    },
+    meals: [
+      { type: "budget", label: "Warung / Local", avgCost: 3, currency: "USD" },
+      { type: "mid", label: "Café / Restaurant", avgCost: 10, currency: "USD" },
+      { type: "fine", label: "Beach Club / Fine Dining", avgCost: 45, currency: "USD" },
+    ],
+    hotels: [
+      { name: "OYO Kuta Beach", stars: 3, pricePerNight: 25, currency: "USD", rating: 3.8, bookingUrl: "https://www.agoda.com/search", imageUrl: "", neighborhood: "Kuta" },
+      { name: "Alila Seminyak", stars: 4, pricePerNight: 120, currency: "USD", rating: 4.6, bookingUrl: "https://www.agoda.com/search", imageUrl: "", neighborhood: "Seminyak" },
+      { name: "Four Seasons Jimbaran Bay", stars: 5, pricePerNight: 350, currency: "USD", rating: 4.9, bookingUrl: "https://www.agoda.com/search", imageUrl: "", neighborhood: "Jimbaran" },
+    ],
+    timezone: "WITA (UTC+8)",
+    timezoneOffset: 8,
+    currency: "IDR",
+    currencySymbol: "Rp",
+    exchangeRateToUSD: 0.000063,
+    airportToHotelKm: 15,
+    airportToHotelMinutes: 30,
+  },
+  Taipei: {
+    transport: {
+      mainMode: "MRT / Uber",
+      options: [
+        { type: "Uber/Taxi", icon: "🚗", description: "Uber or taxi (avg ride)", costPerTrip: 5, tripsPerDay: 3, currency: "USD", notes: "Uber or local taxi apps" },
+        { type: "Airport Transfer", icon: "✈️", description: "Taoyuan to Taipei Main Station", costPerTrip: 5, tripsPerDay: 0, currency: "USD", notes: "Airport MRT Express ~35 min" },
+        { type: "MRT", icon: "🚇", description: "Taipei Metro MRT", costPerTrip: 0.8, tripsPerDay: 4, currency: "USD", notes: "Excellent coverage, EasyCard accepted" },
+      ],
+    },
+    meals: [
+      { type: "budget", label: "Night Market / Local", avgCost: 4, currency: "USD" },
+      { type: "mid", label: "Restaurant", avgCost: 15, currency: "USD" },
+      { type: "fine", label: "Fine Dining", avgCost: 60, currency: "USD" },
+    ],
+    hotels: [
+      { name: "CityInn Plus Ximending", stars: 3, pricePerNight: 55, currency: "USD", rating: 4.2, bookingUrl: "https://www.agoda.com/search", imageUrl: "", neighborhood: "Ximending" },
+      { name: "Regent Taipei", stars: 4, pricePerNight: 130, currency: "USD", rating: 4.6, bookingUrl: "https://www.agoda.com/search", imageUrl: "", neighborhood: "Zhongshan" },
+      { name: "Mandarin Oriental Taipei", stars: 5, pricePerNight: 280, currency: "USD", rating: 4.8, bookingUrl: "https://www.agoda.com/search", imageUrl: "", neighborhood: "Songshan" },
+    ],
+    timezone: "CST (UTC+8)",
+    timezoneOffset: 8,
+    currency: "TWD",
+    currencySymbol: "NT$",
+    exchangeRateToUSD: 0.031,
+    airportToHotelKm: 35,
+    airportToHotelMinutes: 40,
+  },
 };
 
 const defaultCityData: CityData = {
@@ -354,7 +436,7 @@ export function generateFlightOptions(
   from: string,
   to: string,
   date: string,
-  priority: FlightPriority = "rating"
+  priorities: FlightPriority[] = ["rating"]
 ): FlightOption[] {
   const airlines = [
     { name: "Korean Air", logo: "🇰🇷", credibility: 92 },
@@ -421,25 +503,34 @@ export function generateFlightOptions(
     });
   }
 
+  const pris = priorities.length > 0 ? priorities : ["rating" as FlightPriority];
+
   return options.sort((a, b) => {
-    switch (priority) {
-      case "duration": {
-        const durA = parseDuration(a.duration);
-        const durB = parseDuration(b.duration);
-        return durA - durB;
-      }
-      case "rating":
-        return b.credibilityScore - a.credibilityScore;
-      case "stops":
-        return a.stops - b.stops || a.price - b.price;
-      case "price":
-        return a.price - b.price;
-      default: {
-        const scoreA = a.credibilityScore * 0.3 - a.stops * 15 + (1000 - a.price) * 0.02;
-        const scoreB = b.credibilityScore * 0.3 - b.stops * 15 + (1000 - b.price) * 0.02;
-        return scoreB - scoreA;
+    let scoreA = 0;
+    let scoreB = 0;
+    const w = 1 / pris.length;
+
+    for (const p of pris) {
+      switch (p) {
+        case "duration":
+          scoreA += (1 - parseDuration(a.duration) / 2000) * w;
+          scoreB += (1 - parseDuration(b.duration) / 2000) * w;
+          break;
+        case "rating":
+          scoreA += (a.credibilityScore / 100) * w;
+          scoreB += (b.credibilityScore / 100) * w;
+          break;
+        case "stops":
+          scoreA += (1 - a.stops / 3) * w;
+          scoreB += (1 - b.stops / 3) * w;
+          break;
+        case "price":
+          scoreA += (1 - a.price / 2000) * w;
+          scoreB += (1 - b.price / 2000) * w;
+          break;
       }
     }
+    return scoreB - scoreA;
   });
 }
 
@@ -453,10 +544,13 @@ function getBasePrice(from: string, to: string): number {
     "ICN-DXB": 650, "ICN-MIA": 950, "ICN-JFK": 850, "ICN-LAX": 750,
     "ICN-LHR": 700, "ICN-CDG": 720, "ICN-NRT": 200, "ICN-SIN": 400,
     "ICN-BKK": 350, "ICN-HKG": 300, "ICN-SFO": 780, "ICN-FRA": 680,
+    "ICN-CGK": 420, "ICN-DPS": 450, "ICN-TPE": 220,
     "DXB-MIA": 800, "DXB-JFK": 750, "DXB-LHR": 400, "DXB-SIN": 450,
     "MIA-JFK": 200, "MIA-LAX": 250, "JFK-LHR": 450, "JFK-CDG": 480,
     "LHR-CDG": 120, "SIN-BKK": 150, "SIN-HKG": 200,
     "NRT-LAX": 700, "NRT-SFO": 680, "NRT-SIN": 400,
+    "CGK-SIN": 150, "CGK-BKK": 250, "CGK-DXB": 550, "CGK-NRT": 400,
+    "DPS-SIN": 200, "DPS-CGK": 80, "TPE-NRT": 220, "TPE-HKG": 180,
   };
   const key = `${from}-${to}`;
   const reverseKey = `${to}-${from}`;
@@ -468,8 +562,11 @@ function getBaseDuration(from: string, to: string): number {
     "ICN-DXB": 570, "ICN-MIA": 1080, "ICN-JFK": 840, "ICN-LAX": 690,
     "ICN-LHR": 720, "ICN-CDG": 740, "ICN-NRT": 150, "ICN-SIN": 390,
     "ICN-BKK": 330, "ICN-HKG": 240, "ICN-SFO": 660, "ICN-FRA": 690,
+    "ICN-CGK": 420, "ICN-DPS": 450, "ICN-TPE": 160,
     "DXB-MIA": 960, "DXB-JFK": 870, "DXB-LHR": 450, "DXB-SIN": 420,
     "MIA-JFK": 180, "MIA-LAX": 330, "JFK-LHR": 420, "JFK-CDG": 450,
+    "CGK-SIN": 120, "CGK-BKK": 210, "CGK-DXB": 510, "CGK-NRT": 420,
+    "DPS-SIN": 160, "TPE-NRT": 180, "TPE-HKG": 120,
   };
   const key = `${from}-${to}`;
   const reverseKey = `${to}-${from}`;
