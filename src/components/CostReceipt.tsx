@@ -12,6 +12,7 @@ interface DestSelections {
   flightIdx: number;
   hotelIdx: number;
   mealTiers: string[];
+  transportIdxs: number[];
 }
 
 interface Selections {
@@ -103,22 +104,26 @@ function DestinationSection({
   selectedFlightIdx,
   selectedHotelIdx,
   selectedMealTiers,
+  selectedTransportIdxs,
   mealsPerDay,
   onSelectFlight,
   onSelectHotel,
   onToggleMealTier,
   onSetMealsPerDay,
+  onToggleTransport,
 }: {
   dest: DestinationCost;
   index: number;
   selectedFlightIdx: number;
   selectedHotelIdx: number;
   selectedMealTiers: string[];
+  selectedTransportIdxs: number[];
   mealsPerDay: number;
   onSelectFlight: (idx: number) => void;
   onSelectHotel: (idx: number) => void;
   onToggleMealTier: (tier: string) => void;
   onSetMealsPerDay: (n: number) => void;
+  onToggleTransport: (idx: number) => void;
 }) {
   const [showAllFlights, setShowAllFlights] = useState(false);
   const { flights: ordered, indexMap } = reorderFlights(dest.flights, selectedFlightIdx);
@@ -132,9 +137,14 @@ function DestinationSection({
     : 0;
   const foodTotal = Math.round(avgMealCost * mealsPerDay * dest.food.totalDays * 100) / 100;
 
+  const transportTotal = dest.transport.reduce((sum, t, ti) => {
+    if (!selectedTransportIdxs.includes(ti)) return sum;
+    return sum + t.totalCost;
+  }, 0);
+
   const subtotal =
     (selectedFlight?.price || 0) +
-    dest.transportTotal +
+    transportTotal +
     foodTotal +
     (selectedHotel?.totalCost || 0);
 
@@ -191,54 +201,43 @@ function DestinationSection({
           <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2">
             <span>🚗</span> Transportation
           </h4>
-          <span className="text-sm font-semibold text-gray-700">${dest.transportTotal.toLocaleString()}</span>
+          <span className="text-sm font-semibold text-gray-700">${transportTotal.toLocaleString()}</span>
         </div>
-        <div className="hidden sm:block bg-gray-50/50 rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-[10px] uppercase tracking-wider text-gray-400">
-                <th className="text-left p-3 font-medium">Type</th>
-                <th className="text-left p-3 font-medium">Per Trip</th>
-                <th className="text-left p-3 font-medium">Frequency</th>
-                <th className="text-right p-3 font-medium">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dest.transport.map((t, ti) => (
-                <tr key={ti} className="border-t border-gray-100/80">
-                  <td className="p-3">
-                    <div className="flex items-center gap-2">
-                      <span>{t.icon}</span>
-                      <div>
-                        <div className="font-medium text-gray-700 text-xs">{t.type}</div>
-                        <div className="text-[10px] text-gray-400">{t.notes}</div>
+        <div className="space-y-2">
+          {dest.transport.map((t, ti) => {
+            const isAirport = t.tripsPerDay === 0;
+            const active = selectedTransportIdxs.includes(ti);
+            return (
+              <button
+                key={ti}
+                onClick={() => { if (!isAirport) onToggleTransport(ti); }}
+                className={`w-full text-left p-3 sm:p-4 rounded-xl border transition-all duration-300 ${
+                  active
+                    ? "border-gray-400 bg-gray-50/80 shadow-[0_2px_12px_rgba(0,0,0,0.05)]"
+                    : "border-gray-100 bg-white hover:border-gray-200 opacity-50"
+                } ${isAirport ? "cursor-default" : "cursor-pointer"}`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-base flex-shrink-0">{t.icon}</span>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-gray-700 text-xs">{t.type}</span>
+                        {isAirport && <span className="text-[9px] px-1.5 py-0.5 bg-gray-100 text-gray-400 rounded-full">default</span>}
                       </div>
+                      <div className="text-[10px] text-gray-400">{t.notes}</div>
                     </div>
-                  </td>
-                  <td className="p-3 text-gray-600 text-xs">${t.costPerTrip}</td>
-                  <td className="p-3 text-gray-600 text-xs">{t.tripsPerDay === 0 ? "2× (arr+dep)" : `${t.tripsPerDay}×/day · ${t.totalDays}d`}</td>
-                  <td className="p-3 text-right font-medium text-gray-800 text-xs">${t.totalCost.toLocaleString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="sm:hidden space-y-2">
-          {dest.transport.map((t, ti) => (
-            <div key={ti} className="bg-gray-50/50 rounded-xl p-3">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <span>{t.icon}</span>
-                  <span className="font-medium text-gray-700 text-xs">{t.type}</span>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <div className="text-xs font-semibold text-gray-800">${t.totalCost.toLocaleString()}</div>
+                    <div className="text-[10px] text-gray-400">
+                      ${t.costPerTrip}/trip · {t.tripsPerDay === 0 ? "2×" : `${t.tripsPerDay}×/day · ${t.totalDays}d`}
+                    </div>
+                  </div>
                 </div>
-                <span className="font-medium text-gray-800 text-xs">${t.totalCost.toLocaleString()}</span>
-              </div>
-              <div className="text-[10px] text-gray-400 pl-6">
-                ${t.costPerTrip}/trip · {t.tripsPerDay === 0 ? "2× (arr+dep)" : `${t.tripsPerDay}×/day · ${t.totalDays}d`}
-              </div>
-              {t.notes && <div className="text-[10px] text-gray-400 pl-6 mt-0.5">{t.notes}</div>}
-            </div>
-          ))}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -331,7 +330,7 @@ function DestinationSection({
                       href={agodaUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
                       Search on Agoda →
@@ -356,10 +355,12 @@ export default function CostReceipt({ summary }: CostReceiptProps) {
   const initialSelections: Selections = {};
   summary.destinations.forEach((dest, i) => {
     const defaultHotelIdx = dest.hotels.findIndex((h) => h.name === dest.selectedHotel?.name);
+    const airportIdxs = dest.transport.map((t, ti) => (t.tripsPerDay === 0 ? ti : -1)).filter((x) => x >= 0);
     initialSelections[i] = {
       flightIdx: 0,
       hotelIdx: Math.max(0, defaultHotelIdx),
       mealTiers: dest.food.mealOptions.map((m) => m.type),
+      transportIdxs: airportIdxs,
     };
   });
 
@@ -379,6 +380,13 @@ export default function CostReceipt({ summary }: CostReceiptProps) {
       return { ...prev, [destIdx]: { ...prev[destIdx], mealTiers: next } };
     });
   };
+  const toggleTransport = (destIdx: number, tIdx: number) => {
+    setSelections((prev) => {
+      const cur = prev[destIdx]?.transportIdxs || [];
+      const next = cur.includes(tIdx) ? cur.filter((x) => x !== tIdx) : [...cur, tIdx];
+      return { ...prev, [destIdx]: { ...prev[destIdx], transportIdxs: next } };
+    });
+  };
 
   const totals = useMemo(() => {
     let flights = 0;
@@ -387,12 +395,12 @@ export default function CostReceipt({ summary }: CostReceiptProps) {
     let hotels = 0;
 
     summary.destinations.forEach((dest, i) => {
-      const sel = selections[i] || { flightIdx: 0, hotelIdx: 0, mealTiers: [] };
+      const sel = selections[i] || { flightIdx: 0, hotelIdx: 0, mealTiers: [], transportIdxs: [] };
       const flight = dest.flights[sel.flightIdx] || dest.flights[0];
       flights += flight?.price || 0;
 
       if (!dest.isReturn) {
-        transport += dest.transportTotal;
+        transport += dest.transport.reduce((s, t, ti) => (sel.transportIdxs.includes(ti) ? s + t.totalCost : s), 0);
         const activeMeals = dest.food.mealOptions.filter((m) => sel.mealTiers.includes(m.type));
         const avg = activeMeals.length > 0 ? activeMeals.reduce((s, m) => s + m.avgCost, 0) / activeMeals.length : 0;
         food += avg * mealsPerDay * dest.food.totalDays;
@@ -440,11 +448,13 @@ export default function CostReceipt({ summary }: CostReceiptProps) {
             selectedFlightIdx={selections[i]?.flightIdx ?? 0}
             selectedHotelIdx={selections[i]?.hotelIdx ?? 0}
             selectedMealTiers={selections[i]?.mealTiers ?? dest.food.mealOptions.map((m) => m.type)}
+            selectedTransportIdxs={selections[i]?.transportIdxs ?? []}
             mealsPerDay={mealsPerDay}
             onSelectFlight={(idx) => setFlight(i, idx)}
             onSelectHotel={(idx) => setHotel(i, idx)}
             onToggleMealTier={(tier) => toggleMealTier(i, tier)}
             onSetMealsPerDay={setMealsPerDay}
+            onToggleTransport={(idx) => toggleTransport(i, idx)}
           />
         )
       )}

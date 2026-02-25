@@ -82,16 +82,16 @@ export default function FlightCard({ flight, isSelected, onSelect }: FlightCardP
             href={`https://www.google.com/travel/flights?q=Flights+to+${encodeURIComponent(flight.flightNumber.split(" ")[0])}+${encodeURIComponent(flight.airline)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 transition-colors"
             onClick={(e) => e.stopPropagation()}
           >
             Google Flights →
           </a>
           <a
-            href="https://www.secretflying.com/posts/"
+            href="https://www.secretflying.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-purple-600 hover:text-purple-800 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 transition-colors"
             onClick={(e) => e.stopPropagation()}
           >
             Secret Flying →
